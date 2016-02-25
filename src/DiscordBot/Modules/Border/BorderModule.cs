@@ -35,11 +35,17 @@ namespace DiscordBot.Modules.Border
                     {
                         return GetBorderSS(e, "");
                     });
-                group.CreateCommand("sif")
-                    .Description("Returns the current School Idol Festival tier borders.")
+                group.CreateCommand("sifen")
+                    .Description("Returns the current School Idol Festival EN tier borders.")
                     .Do(e =>
                     {
-                        return GetBorderSIF(e, "");
+                        return GetBorderSIFEN(e, "");
+                    });
+                group.CreateCommand("sifjp")
+                    .Description("Returns the current School Idol Festival JP tier borders.")
+                    .Do(e =>
+                    {
+                        return GetBorderSIFJP(e, "");
                     });
             });
         }
@@ -67,11 +73,11 @@ namespace DiscordBot.Modules.Border
             formattedResult = String.Format("\nLast Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})\nT5: {5} (+{10})", args);
 
             await _client.Reply(e, $"{formattedResult}");
-
         }
-        private async Task GetBorderSIF(CommandEventArgs e, string target)
+        private async Task GetBorderSIFEN(CommandEventArgs e, string target)
         {
             sifCsv = "https://docs.google.com/spreadsheets/d/1a2ihrwVgyZnjy3OjqKYsFyJLxECXBO5WrPkEK1WEivw/export?format=csv&id=1a2ihrwVgyZnjy3OjqKYsFyJLxECXBO5WrPkEK1WEivw&gid=2089803644";
+
             string csv = GetCSV(sifCsv);
             string[] splitCsv = csv.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
             string[] latest, previous = { };
@@ -85,16 +91,37 @@ namespace DiscordBot.Modules.Border
                 }
                 i++;
             }
-
-            //previous = splitCsv[i - 2].Split(',');
+            previous = splitCsv[i - 2].Split(',');
             latest = splitCsv[i - 1].Split(',');
-
-            object[] args = new object[] { latest[1], latest[4], latest[5], latest[6], latest[7], latest[9], latest[10], latest[11], latest[12] };
-
-            string formattedResult = String.Format("\nLast Updated: {0} UTC\nT1: {1} (+{5})\nT2: {2} (+{6})\nT3: {3} (+{7})\nT4: {4} (+{8})", args);
-            
+            TimeSpan elapsed = DateTime.Parse(latest[1]) - DateTime.Parse(previous[1]);
+            object[] args = new object[] { latest[1], latest[4], latest[5], latest[6], latest[7], latest[9], latest[10], latest[11], latest[12], elapsed.TotalMinutes };
+            string formattedResult = String.Format("\nLast Updated: {0} UTC (+{9} min)\nT1: {1} (+{5})\nT2: {2} (+{6})\nT3: {3} (+{7})\nT4: {4} (+{8})", args);            
             await _client.Reply(e, $"{formattedResult}");
+        }
 
+        private async Task GetBorderSIFJP(CommandEventArgs e, string target)
+        {
+            ssCsv = "http://llborder.web.fc2.com/summary.csv";
+
+            string csv, entry, prevEntry, formattedResult;
+            string[] splitCsv, a, b;
+            int[] delta = { };
+            object[] args;
+            TimeSpan elapsed;
+            csv = GetCSV(ssCsv);
+            splitCsv = csv.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+            entry = splitCsv.GetValue(splitCsv.Count() - 2).ToString();
+            prevEntry = splitCsv.GetValue(splitCsv.Count() - 3).ToString();
+            a = entry.Split(',');
+            b = prevEntry.Split(',');
+
+            delta = new int[] { 0, Int32.Parse(a[1]) - Int32.Parse(b[1]), Int32.Parse(a[2]) - Int32.Parse(b[2]), Int32.Parse(a[3]) - Int32.Parse(b[3]), Int32.Parse(a[4]) - Int32.Parse(b[4]), Int32.Parse(a[5]) - Int32.Parse(b[5]) };
+            elapsed = DateTime.Parse(a[0]) - DateTime.Parse(b[0]);
+            args = new object[] { a[0], a[1], a[2], a[3], a[4], a[5], delta[1], delta[2], delta[3], delta[4], delta[5], elapsed.TotalMinutes };
+
+            formattedResult = String.Format("\nLast Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})", args);
+
+            await _client.Reply(e, $"{formattedResult}");
         }
         public string GetCSV(string url)
         {
