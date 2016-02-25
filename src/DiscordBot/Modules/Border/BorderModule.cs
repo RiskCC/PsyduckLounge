@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using System;
 using System.Net;
 using System.IO;
+using Google.GData.Client;
+using Google.GData.Extensions;
+using Google.GData.Spreadsheets;
 
 namespace DiscordBot.Modules.Border
 {
@@ -15,31 +18,33 @@ namespace DiscordBot.Modules.Border
     {
         private ModuleManager _manager;
         private DiscordClient _client;
-        private string ssCsv;
+        private string ssCsv, sifCsv;
+        private SpreadsheetsService myService;
 
         void IModule.Install(ModuleManager manager)
         {
             _manager = manager;
             _client = _manager.Client;
 
+           // Authenticate();
             manager.CreateCommands("border", group =>
             {
                 group.CreateCommand("ss")
                     .Description("Returns the current Starlight Stage tier borders.")
                     .Do(e =>
                     {
-                        return GetBorder(e, "ss");
+                        return GetBorderSS(e, "");
                     });
-                //group.CreateCommand("sif")
-               //     .Description("Returns the current School Idol Festival tier borders.")
-                //    .Do(e =>
-               //     {
-                //        return GetBorder(e, "ss");
-                //    });
+                group.CreateCommand("sif")
+                    .Description("Returns the current School Idol Festival tier borders.")
+                    .Do(e =>
+                    {
+                        return GetBorderSIF(e, "");
+                    });
             });
         }
 
-        private async Task GetBorder(CommandEventArgs e, string target)
+        private async Task GetBorderSS(CommandEventArgs e, string target)
         {
             ssCsv = "http://deresuteborder.web.fc2.com/csv/event_latest.csv";
 
@@ -59,8 +64,35 @@ namespace DiscordBot.Modules.Border
             elapsed = DateTime.Parse(a[0]) - DateTime.Parse(b[0]);
             args = new object[] { a[0], a[1], a[2], a[3], a[4], a[5], delta[1], delta[2], delta[3], delta[4], delta[5], elapsed.TotalMinutes };
 
-            formattedResult = String.Format("\nLast Updated: {0} (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})\nT5: {5} (+{10})", args);
+            formattedResult = String.Format("\nLast Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})\nT5: {5} (+{10})", args);
 
+            await _client.Reply(e, $"{formattedResult}");
+
+        }
+        private async Task GetBorderSIF(CommandEventArgs e, string target)
+        {
+            sifCsv = "https://docs.google.com/spreadsheets/d/1a2ihrwVgyZnjy3OjqKYsFyJLxECXBO5WrPkEK1WEivw/export?format=csv&id=1a2ihrwVgyZnjy3OjqKYsFyJLxECXBO5WrPkEK1WEivw&gid=2089803644";
+            string csv = GetCSV(sifCsv);
+            string[] splitCsv = csv.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+            string[] latest, previous = { };
+            int i = 0;
+            foreach(string entry in splitCsv)
+            {
+                string[] splitEntry = entry.Split(',');
+                if (String.IsNullOrEmpty(splitEntry[3]))
+                {
+                    break;
+                }
+                i++;
+            }
+
+            //previous = splitCsv[i - 2].Split(',');
+            latest = splitCsv[i - 1].Split(',');
+
+            object[] args = new object[] { latest[1], latest[4], latest[5], latest[6], latest[7], latest[9], latest[10], latest[11], latest[12] };
+
+            string formattedResult = String.Format("\nLast Updated: {0} UTC\nT1: {1} (+{5})\nT2: {2} (+{6})\nT3: {3} (+{7})\nT4: {4} (+{8})", args);
+            
             await _client.Reply(e, $"{formattedResult}");
 
         }

@@ -68,8 +68,8 @@ namespace DiscordBot
             .AddService<SettingsService>()
             .AddService<HttpService>()
 
-            .AddModule<AdminModule>("Admin", ModuleFilter.ServerWhitelist)
-            .AddModule<BorderModule>("Border", ModuleFilter.ServerWhitelist)
+            //.AddModule<AdminModule>("Admin", ModuleFilter.ServerWhitelist)
+            .AddModule<BorderModule>("Border", ModuleFilter.None)
             //.AddModule<ColorsModule>("Colors", ModuleFilter.ServerWhitelist)
             //.AddModule<FeedModule>("Feeds", ModuleFilter.ServerWhitelist)
             //.AddModule<GithubModule>("Repos", ModuleFilter.ServerWhitelist)
@@ -93,7 +93,7 @@ namespace DiscordBot
                     try
                     {
                         await _client.Connect(GlobalSettings.Discord.Email, GlobalSettings.Discord.Password);
-                        //_client.SetGame("with Risk");
+                        _client.SetGame("as Mimorin");
                         break;
                     }
                     catch (Exception ex)

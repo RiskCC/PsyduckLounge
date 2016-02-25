@@ -55,6 +55,9 @@
         "System.Xml.Linq": "4.0.0.0"
       },
       "dependencies": {
+        "Google.GData.Client": "1.0.0-*",
+        "Google.GData.Extensions": "1.0.0-*",
+        "Google.GData.Spreadsheets": "1.0.0-*",
         "NAudio": "1.7.3"
       }
     }
