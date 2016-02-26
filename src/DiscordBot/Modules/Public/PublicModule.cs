@@ -74,7 +74,7 @@ namespace DiscordBot.Modules.Public
                     {
                         await e.Channel.SendMessage(
                             $"{Format.Bold("Info")}\n" +
-                            $"- Author: Voltana (ID 53905483156684800)\n" +
+                            $"- Author: Risk (ID 115307751831240709)\n" +
                             $"- Library: {DiscordConfig.LibName} ({DiscordConfig.LibVersion})\n" +
                             $"- Runtime: {GetRuntime()} {GetBitness()}\n" +
                             $"- Uptime: {GetUptime()}\n\n" +

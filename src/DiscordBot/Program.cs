@@ -78,7 +78,7 @@ namespace DiscordBot
             //.AddModule<TwitchModule>("Twitch", ModuleFilter.ServerWhitelist)
             //.AddModule<StatusModule>("Status", ModuleFilter.ServerWhitelist);
             //.AddModule(new ExecuteModule(env, exporter), "Execute", ModuleFilter.ServerWhitelist);            
-            
+
 #if PRIVATE
             PrivateModules.Install(_client);
 #endif
@@ -93,7 +93,7 @@ namespace DiscordBot
                     try
                     {
                         await _client.Connect(GlobalSettings.Discord.Email, GlobalSettings.Discord.Password);
-                        _client.SetGame("as Mimorin");
+                        //_client.SetGame("Old Maid");
                         break;
                     }
                     catch (Exception ex)

@@ -113,7 +113,7 @@ namespace DiscordBot.Modules.Execute
 					return AssemblyMetadata.Create(moduleMetadata).GetReference(filePath: fileMetadataReference.Path);
 				}
 			}
-            
+
 			var projectReference = metadataReference as IMetadataProjectReference;
 			if (projectReference != null)
 			{

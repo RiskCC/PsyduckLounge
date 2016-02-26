@@ -18,17 +18,33 @@ namespace DiscordBot.Modules.Border
     {
         private ModuleManager _manager;
         private DiscordClient _client;
-        private string ssCsv, sifCsv;
-        private SpreadsheetsService myService;
+        private string ssCsv = "http://deresuteborder.web.fc2.com/csv/event_latest.csv";
+        private string sifenCsv = "https://docs.google.com/spreadsheets/d/1a2ihrwVgyZnjy3OjqKYsFyJLxECXBO5WrPkEK1WEivw/export?format=csv&id=1a2ihrwVgyZnjy3OjqKYsFyJLxECXBO5WrPkEK1WEivw&gid=2089803644";
+        private string sifjpCsv = "http://llborder.web.fc2.com/summary.csv";
+        private string result, csv, current, previous;
+        private string[] splitCsv, a, b;
+        private int[] d;
+        private object[] args;
+        private TimeSpan elapsed;
 
         void IModule.Install(ModuleManager manager)
         {
             _manager = manager;
             _client = _manager.Client;
 
-           // Authenticate();
+            // Authenticate();
             manager.CreateCommands("border", group =>
             {
+                group.CreateCommand("help")
+                       .Description("Returns the usage for Border module.")
+                       .Do(e =>
+                       {
+                           return _client.Reply(e,
+                               $"Usage: border <game>\n" +
+                               "ss - Starlight Stage\n" +
+                               "sifen - School Idol Festival English\n" +
+                               "sifjp - School Idol Festival Japanese");
+                       });
                 group.CreateCommand("ss")
                     .Description("Returns the current Starlight Stage tier borders.")
                     .Do(e =>
@@ -52,37 +68,27 @@ namespace DiscordBot.Modules.Border
 
         private async Task GetBorderSS(CommandEventArgs e, string target)
         {
-            ssCsv = "http://deresuteborder.web.fc2.com/csv/event_latest.csv";
-
-            string csv, entry, prevEntry, formattedResult;
-            string[] splitCsv, a, b;
-            int[] delta = { };
-            object[] args;
-            TimeSpan elapsed;
             csv = GetCSV(ssCsv);
             splitCsv = csv.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-            entry = splitCsv.GetValue(splitCsv.Count() - 2).ToString();
-            prevEntry = splitCsv.GetValue(splitCsv.Count() - 3).ToString();
-            a = entry.Split(',');
-            b = prevEntry.Split(',');
+            current = splitCsv.GetValue(splitCsv.Count() - 2).ToString();
+            previous = splitCsv.GetValue(splitCsv.Count() - 3).ToString();
+            a = current.Split(',');
+            b = previous.Split(',');
 
-            delta = new int[] { 0, Int32.Parse(a[1]) - Int32.Parse(b[1]), Int32.Parse(a[2]) - Int32.Parse(b[2]), Int32.Parse(a[3]) - Int32.Parse(b[3]), Int32.Parse(a[4]) - Int32.Parse(b[4]), Int32.Parse(a[5]) - Int32.Parse(b[5]) };
+            d = new int[] { 0, Int32.Parse(a[1]) - Int32.Parse(b[1]), Int32.Parse(a[2]) - Int32.Parse(b[2]), Int32.Parse(a[3]) - Int32.Parse(b[3]), Int32.Parse(a[4]) - Int32.Parse(b[4]), Int32.Parse(a[5]) - Int32.Parse(b[5]) };
             elapsed = DateTime.Parse(a[0]) - DateTime.Parse(b[0]);
-            args = new object[] { a[0], a[1], a[2], a[3], a[4], a[5], delta[1], delta[2], delta[3], delta[4], delta[5], elapsed.TotalMinutes };
+            args = new object[] { a[0], a[1], a[2], a[3], a[4], a[5], d[1], d[2], d[3], d[4], d[5], elapsed.TotalMinutes };
 
-            formattedResult = String.Format("\nLast Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})\nT5: {5} (+{10})", args);
-
-            await _client.Reply(e, $"{formattedResult}");
+            result = String.Format("\nLast Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})\nT5: {5} (+{10})", args);
+            await _client.Reply(e, $"{result}");
         }
+
         private async Task GetBorderSIFEN(CommandEventArgs e, string target)
         {
-            sifCsv = "https://docs.google.com/spreadsheets/d/1a2ihrwVgyZnjy3OjqKYsFyJLxECXBO5WrPkEK1WEivw/export?format=csv&id=1a2ihrwVgyZnjy3OjqKYsFyJLxECXBO5WrPkEK1WEivw&gid=2089803644";
-
-            string csv = GetCSV(sifCsv);
-            string[] splitCsv = csv.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-            string[] latest, previous = { };
+            csv = GetCSV(sifenCsv);
+            splitCsv = csv.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
             int i = 0;
-            foreach(string entry in splitCsv)
+            foreach (string entry in splitCsv)
             {
                 string[] splitEntry = entry.Split(',');
                 if (String.IsNullOrEmpty(splitEntry[3]))
@@ -91,38 +97,33 @@ namespace DiscordBot.Modules.Border
                 }
                 i++;
             }
-            previous = splitCsv[i - 2].Split(',');
-            latest = splitCsv[i - 1].Split(',');
-            TimeSpan elapsed = DateTime.Parse(latest[1]) - DateTime.Parse(previous[1]);
-            object[] args = new object[] { latest[1], latest[4], latest[5], latest[6], latest[7], latest[9], latest[10], latest[11], latest[12], elapsed.TotalMinutes };
-            string formattedResult = String.Format("\nLast Updated: {0} UTC (+{9} min)\nT1: {1} (+{5})\nT2: {2} (+{6})\nT3: {3} (+{7})\nT4: {4} (+{8})", args);            
-            await _client.Reply(e, $"{formattedResult}");
+            b = splitCsv[i - 2].Split(',');
+            a = splitCsv[i - 1].Split(',');
+            elapsed = DateTime.Parse(a[1]) - DateTime.Parse(b[1]);
+            args = new object[] { a[1], a[4], a[5], a[6], a[7], a[9], a[10], a[11], a[12], elapsed.TotalMinutes };
+
+            result = String.Format("\nLast Updated: {0} UTC (+{9} min)\nT1: {1} (+{5})\nT2: {2} (+{6})\nT3: {3} (+{7})\nT4: {4} (+{8})", args);
+            await _client.Reply(e, $"{result}");
         }
 
         private async Task GetBorderSIFJP(CommandEventArgs e, string target)
         {
-            ssCsv = "http://llborder.web.fc2.com/summary.csv";
-
-            string csv, entry, prevEntry, formattedResult;
-            string[] splitCsv, a, b;
-            int[] delta = { };
-            object[] args;
-            TimeSpan elapsed;
-            csv = GetCSV(ssCsv);
+            csv = GetCSV(sifjpCsv);
             splitCsv = csv.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-            entry = splitCsv.GetValue(splitCsv.Count() - 2).ToString();
-            prevEntry = splitCsv.GetValue(splitCsv.Count() - 3).ToString();
-            a = entry.Split(',');
-            b = prevEntry.Split(',');
+            current = splitCsv.GetValue(splitCsv.Count() - 2).ToString();
+            previous = splitCsv.GetValue(splitCsv.Count() - 3).ToString();
+            a = current.Split(',');
+            b = previous.Split(',');
 
-            delta = new int[] { 0, Int32.Parse(a[1]) - Int32.Parse(b[1]), Int32.Parse(a[2]) - Int32.Parse(b[2]), Int32.Parse(a[3]) - Int32.Parse(b[3]), Int32.Parse(a[4]) - Int32.Parse(b[4]), Int32.Parse(a[5]) - Int32.Parse(b[5]) };
+            d = new int[] { 0, Int32.Parse(a[1]) - Int32.Parse(b[1]), Int32.Parse(a[2]) - Int32.Parse(b[2]), Int32.Parse(a[3]) - Int32.Parse(b[3]), Int32.Parse(a[4]) - Int32.Parse(b[4]), Int32.Parse(a[5]) - Int32.Parse(b[5]) };
             elapsed = DateTime.Parse(a[0]) - DateTime.Parse(b[0]);
-            args = new object[] { a[0], a[1], a[2], a[3], a[4], a[5], delta[1], delta[2], delta[3], delta[4], delta[5], elapsed.TotalMinutes };
 
-            formattedResult = String.Format("\nLast Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})", args);
+            args = new object[] { a[0], a[1], a[2], a[3], a[4], a[5], d[1], d[2], d[3], d[4], d[5], elapsed.TotalMinutes };
 
-            await _client.Reply(e, $"{formattedResult}");
+            result = String.Format("\nLast Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})", args);
+            await _client.Reply(e, $"{result}");
         }
+
         public string GetCSV(string url)
         {
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
