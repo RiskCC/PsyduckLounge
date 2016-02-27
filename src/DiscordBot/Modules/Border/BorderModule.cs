@@ -1,16 +1,11 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.Commands.Permissions.Levels;
 using Discord.Modules;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
 using System.Net;
 using System.IO;
-using Google.GData.Client;
-using Google.GData.Extensions;
-using Google.GData.Spreadsheets;
 
 namespace DiscordBot.Modules.Border
 {
@@ -31,8 +26,7 @@ namespace DiscordBot.Modules.Border
         {
             _manager = manager;
             _client = _manager.Client;
-
-            // Authenticate();
+            
             manager.CreateCommands("border", group =>
             {
                 group.CreateCommand("help")
@@ -79,8 +73,8 @@ namespace DiscordBot.Modules.Border
             elapsed = DateTime.Parse(a[0]) - DateTime.Parse(b[0]);
             args = new object[] { a[0], a[1], a[2], a[3], a[4], a[5], d[1], d[2], d[3], d[4], d[5], elapsed.TotalMinutes };
 
-            result = String.Format("\nLast Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})\nT5: {5} (+{10})", args);
-            await _client.Reply(e, $"{result}");
+            result = String.Format("Last Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})\nT5: {5} (+{10})", args);
+            await e.Channel.SendMessage($"{result}");
         }
 
         private async Task GetBorderSIFEN(CommandEventArgs e, string target)
@@ -102,8 +96,8 @@ namespace DiscordBot.Modules.Border
             elapsed = DateTime.Parse(a[1]) - DateTime.Parse(b[1]);
             args = new object[] { a[1], a[4], a[5], a[6], a[7], a[9], a[10], a[11], a[12], elapsed.TotalMinutes };
 
-            result = String.Format("\nLast Updated: {0} UTC (+{9} min)\nT1: {1} (+{5})\nT2: {2} (+{6})\nT3: {3} (+{7})\nT4: {4} (+{8})", args);
-            await _client.Reply(e, $"{result}");
+            result = String.Format("Last Updated: {0} UTC (+{9} min)\nT1: {1} (+{5})\nT2: {2} (+{6})\nT3: {3} (+{7})\nT4: {4} (+{8})", args);
+            await e.Channel.SendMessage($"{result}");
         }
 
         private async Task GetBorderSIFJP(CommandEventArgs e, string target)
@@ -120,11 +114,11 @@ namespace DiscordBot.Modules.Border
 
             args = new object[] { a[0], a[1], a[2], a[3], a[4], a[5], d[1], d[2], d[3], d[4], d[5], elapsed.TotalMinutes };
 
-            result = String.Format("\nLast Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})", args);
-            await _client.Reply(e, $"{result}");
+            result = String.Format("Last Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})", args);
+            await e.Channel.SendMessage($"{result}");
         }
 
-        public string GetCSV(string url)
+        private string GetCSV(string url)
         {
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
             HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
