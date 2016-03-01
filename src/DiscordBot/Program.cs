@@ -11,6 +11,7 @@ using DiscordBot.Modules.Finance;
 using DiscordBot.Modules.Github;
 using DiscordBot.Modules.Modules;
 using DiscordBot.Modules.Public;
+using DiscordBot.Modules.Random;
 using DiscordBot.Modules.Status;
 using DiscordBot.Modules.Twitch;
 using DiscordBot.Services;
@@ -25,7 +26,7 @@ namespace DiscordBot
         public static void Main(string[] args) => new Program().Start(args);
 
         private const string AppName = "UmiBot";
-        private const string AppUrl = "";
+        private const string AppUrl = "https://github.com/RiskCC/UmiBot";
 
         private DiscordClient _client;
 
@@ -74,6 +75,7 @@ namespace DiscordBot
             //.AddModule<ColorsModule>("Colors", ModuleFilter.ServerWhitelist)
             //.AddModule<FeedModule>("Feeds", ModuleFilter.ServerWhitelist)
             .AddModule<FinanceModule>("Finance", ModuleFilter.None)
+            .AddModule<RandomModule>("Random", ModuleFilter.None)
             //.AddModule<GithubModule>("Repos", ModuleFilter.ServerWhitelist)
             .AddModule<ModulesModule>("Modules", ModuleFilter.None)
             .AddModule<PublicModule>("Public", ModuleFilter.None);
@@ -95,7 +97,7 @@ namespace DiscordBot
                     try
                     {
                         await _client.Connect(GlobalSettings.Discord.Email, GlobalSettings.Discord.Password);
-                        //_client.SetGame("Old Maid");
+                        _client.SetGame("School Idol Festival");
                         break;
                     }
                     catch (Exception ex)

@@ -62,6 +62,7 @@ namespace DiscordBot.Modules.Border
 
         private async Task GetBorderSS(CommandEventArgs e, string target)
         {
+            await e.Channel.SendIsTyping();
             csv = GetCSV(ssCsv);
             splitCsv = csv.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
             current = splitCsv.GetValue(splitCsv.Count() - 2).ToString();
@@ -79,6 +80,7 @@ namespace DiscordBot.Modules.Border
 
         private async Task GetBorderSIFEN(CommandEventArgs e, string target)
         {
+            await e.Channel.SendIsTyping();
             csv = GetCSV(sifenCsv);
             splitCsv = csv.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
             int i = 0;
@@ -102,6 +104,7 @@ namespace DiscordBot.Modules.Border
 
         private async Task GetBorderSIFJP(CommandEventArgs e, string target)
         {
+            await e.Channel.SendIsTyping();
             csv = GetCSV(sifjpCsv);
             splitCsv = csv.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
             current = splitCsv.GetValue(splitCsv.Count() - 2).ToString();
