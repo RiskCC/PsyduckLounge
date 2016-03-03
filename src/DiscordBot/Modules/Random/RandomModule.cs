@@ -27,6 +27,13 @@ namespace DiscordBot.Modules.Random
                            // Nope.jpg
                            await e.Channel.SendMessage($"http://goo.gl/DnEeCf");
                        });
+                group.CreateCommand("thanks")
+                       .Description("Thanks command")
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"You are welcome {e.User.Name}!");
+                       });
             });
 
         }

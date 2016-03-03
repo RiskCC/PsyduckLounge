@@ -97,7 +97,7 @@ namespace DiscordBot
                     try
                     {
                         await _client.Connect(GlobalSettings.Discord.Email, GlobalSettings.Discord.Password);
-                        _client.SetGame("School Idol Festival");
+                        //_client.SetGame("games");
                         break;
                     }
                     catch (Exception ex)
@@ -185,7 +185,12 @@ namespace DiscordBot
                 text = e.Message;
 
             //Build message
-            StringBuilder builder = new StringBuilder(text.Length + (sourceName?.Length ?? 0) + (exMessage?.Length ?? 0) + 5);
+            StringBuilder builder = new StringBuilder(text.Length + (sourceName?.Length ?? 0) + (exMessage?.Length ?? 0) + 15);
+
+            builder.Append('[');
+            builder.Append(DateTime.Now);
+            builder.Append("] ");
+
             if (sourceName != null)
             {
                 builder.Append('[');
