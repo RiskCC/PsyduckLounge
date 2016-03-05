@@ -20,19 +20,19 @@ namespace DiscordBot.Modules.Random
             manager.CreateCommands("", group =>
             {
                 group.CreateCommand("Kippei nudes")
-                       .Description("Random command for Jhazat")
+                       .Description("Random 001")
                        .Do(async e =>
                        {
                            await e.Channel.SendIsTyping();
                            // Nope.jpg
-                           await e.Channel.SendMessage($"http://goo.gl/DnEeCf");
+                           await e.Channel.SendMessage($"http://i.giphy.com/3ornk3odh0K2ABXmBW.gif");
                        });
-                group.CreateCommand("thanks")
-                       .Description("Thanks command")
+                group.CreateCommand("Jhazat nudes")
+                       .Description("Random 002")
                        .Do(async e =>
                        {
                            await e.Channel.SendIsTyping();
-                           await e.Channel.SendMessage($"You are welcome {e.User.Name}!");
+                           await e.Channel.SendMessage($"http://i.giphy.com/3ornk0Rqhvwa9o2zzG.gif");
                        });
             });
 

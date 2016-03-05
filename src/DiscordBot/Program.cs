@@ -185,7 +185,7 @@ namespace DiscordBot
                 text = e.Message;
 
             //Build message
-            StringBuilder builder = new StringBuilder(text.Length + (sourceName?.Length ?? 0) + (exMessage?.Length ?? 0) + 15);
+            StringBuilder builder = new StringBuilder(text.Length + (sourceName?.Length ?? 0) + (exMessage?.Length ?? 0) + 25);
 
             builder.Append('[');
             builder.Append(DateTime.Now);
