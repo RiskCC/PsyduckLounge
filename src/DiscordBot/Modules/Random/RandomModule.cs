@@ -20,20 +20,27 @@ namespace DiscordBot.Modules.Random
             manager.CreateCommands("", group =>
             {
                 group.CreateCommand("Kippei nudes")
-                       .Description("Random 001")
+                       .Description("Random 001 for Jhazat")
                        .Do(async e =>
                        {
                            await e.Channel.SendIsTyping();
                            // Nope.jpg
-                           await e.Channel.SendMessage($"http://i.giphy.com/3ornk3odh0K2ABXmBW.gif");
+                           await e.Channel.SendMessage($"http://i.imgur.com/knRpikQ.gif");
                        });
                 group.CreateCommand("Jhazat nudes")
-                       .Description("Random 002")
+                       .Description("Random 002 for Jhazat")
                        .Do(async e =>
                        {
                            await e.Channel.SendIsTyping();
-                           await e.Channel.SendMessage($"http://i.giphy.com/3ornk0Rqhvwa9o2zzG.gif");
+                           await e.Channel.SendMessage($"http://i.imgur.com/sxO5h1N.gif");
                        });
+                group.CreateCommand("Coco nudes")
+                       .Description("Random 003 for Owl")
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"http://imgur.com/mdzCSvz");
+                       });					   
             });
 
         }
