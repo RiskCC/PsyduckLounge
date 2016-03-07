@@ -24,7 +24,6 @@ namespace DiscordBot.Modules.Random
                        .Do(async e =>
                        {
                            await e.Channel.SendIsTyping();
-                           // Nope.jpg
                            await e.Channel.SendMessage($"http://i.imgur.com/knRpikQ.gif");
                        });
                 group.CreateCommand("Jhazat nudes")
@@ -39,8 +38,15 @@ namespace DiscordBot.Modules.Random
                        .Do(async e =>
                        {
                            await e.Channel.SendIsTyping();
-                           await e.Channel.SendMessage($"http://imgur.com/mdzCSvz");
-                       });					   
+                           await e.Channel.SendMessage($"http://i.imgur.com/mdzCSvz.jpg");
+                       });
+                group.CreateCommand("Zeraek nudes")
+                       .Description("Random 004 for Zeraek")
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"http://i.imgur.com/eLHoLCC.png");
+                       });
             });
 
         }

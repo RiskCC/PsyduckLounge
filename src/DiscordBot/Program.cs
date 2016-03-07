@@ -16,6 +16,7 @@ using DiscordBot.Modules.Status;
 using DiscordBot.Modules.Twitch;
 using DiscordBot.Services;
 using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,6 +28,7 @@ namespace DiscordBot
 
         private const string AppName = "UmiBot";
         private const string AppUrl = "https://github.com/RiskCC/UmiBot";
+        private string LogFile = "UmiBot.log";
 
         private DiscordClient _client;
 
@@ -215,6 +217,12 @@ namespace DiscordBot
             //{
             Console.ForegroundColor = color;
             Console.WriteLine(text);
+
+            using (StreamWriter w = File.AppendText(LogFile))
+            {
+                w.WriteLine(text);
+            }
+
             //}
             /*#if DEBUG
                         System.Diagnostics.Debug.WriteLine(text);
