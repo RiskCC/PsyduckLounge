@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Commands;
 using Discord.Modules;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace DiscordBot.Modules.Random
     {
         private ModuleManager _manager;
         private DiscordClient _client;
+        private System.Random x = new System.Random();
 
         void IModule.Install(ModuleManager manager)
         {
@@ -47,8 +49,57 @@ namespace DiscordBot.Modules.Random
                            await e.Channel.SendIsTyping();
                            await e.Channel.SendMessage($"http://i.imgur.com/eLHoLCC.png");
                        });
+                group.CreateCommand("Risk plz")
+                       .Description("Random 005 for Risk")
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           if (x.NextDouble() > 0.5)
+                           {
+                               await e.Channel.SendMessage($"http://i.imgur.com/GUqtQJw.gif");
+                           }
+                           else
+                           {
+                               await e.Channel.SendMessage($"http://i.imgur.com/6r5RTzu.gif");
+                           }
+                       });
+
+                group.CreateCommand("sleep")
+                       .Parameter("Text", ParameterType.Optional)
+                       .Description("Random 006 for sleep")
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"{GetSleep(e)}");
+                       });
             });
 
+        }
+
+        private string GetSleep(CommandEventArgs e)
+        {
+            string sleepUrl = "";
+            string[] imageUrl = { "http://i.imgur.com/RKlZlOQ.jpg", "http://i.imgur.com/RG4umjv.png", "http://i.imgur.com/qcCNi62.jpg", "http://i.imgur.com/mZm7u5Y.png", "http://i.imgur.com/tEL3LID.jpg", "http://i.imgur.com/I5Wc8JB.jpg" };
+
+            try
+            {
+                int request = Int32.Parse(e.Args[0]);
+
+                if (request >= 0 && request < 6)
+                {
+                    sleepUrl = imageUrl[request];
+                }
+                else
+                {
+                    sleepUrl = imageUrl[x.Next(0, 6)];
+                }
+            }
+            catch (Exception ex)
+            {
+                sleepUrl = imageUrl[x.Next(0, 6)];
+            }
+
+            return sleepUrl;
         }
 
     }
