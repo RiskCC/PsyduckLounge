@@ -17,7 +17,7 @@ namespace DiscordBot.Modules.StarlightStage
         private ModuleManager _manager;
         private DiscordClient _client;
         private string filePath = "UmiBot.json";
-        private List<Account> accounts;
+        private List<Account> accounts = new List<Account>();
         private string result, name, id;
 
         void IModule.Install(ModuleManager manager)
@@ -44,7 +44,6 @@ namespace DiscordBot.Modules.StarlightStage
                        {
                            await e.Channel.SendIsTyping();
                            AddMe(e);
-                           //await e.Channel.SendMessage($"coming soon (๑◕︵◕๑)");
                        });
             });
         }
@@ -61,7 +60,8 @@ namespace DiscordBot.Modules.StarlightStage
             }
             catch (Exception ex)
             {
-                File.Create(filePath);
+                if (!File.Exists(filePath))
+                    File.Create(filePath);
             }
         }
 
@@ -97,7 +97,6 @@ namespace DiscordBot.Modules.StarlightStage
         {
             try
             {
-
                 id = Read(e.Args[0]);
 
                 if (String.IsNullOrWhiteSpace(id))
@@ -142,23 +141,19 @@ namespace DiscordBot.Modules.StarlightStage
 
             string json = JsonConvert.SerializeObject(accounts.ToArray());
 
-            //write string to file
             System.IO.File.WriteAllText($"{filePath}", json);
         }
 
         private string Read(string name)
         {
-            var result = "";
-
             foreach (Account a in accounts)
             {
                 if (String.Equals(a.name, name, StringComparison.OrdinalIgnoreCase))
                 {
-                    result = a.id;
+                    return a.id;
                 }
             }
-
-            return result;
+            return "";
         }
     }
 
