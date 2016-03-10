@@ -48,7 +48,7 @@ namespace DiscordBot
                 x.MessageCacheSize = 0;
                 x.UsePermissionsCache = true;
                 x.EnablePreUpdateEvents = true;
-                x.LogLevel = LogSeverity.Debug;
+                x.LogLevel = LogSeverity.Info;
                 x.LogHandler = OnLogMessage;
             })
             .UsingCommands(x =>
@@ -190,6 +190,11 @@ namespace DiscordBot
 
             //Build message
             StringBuilder builder = new StringBuilder(text.Length + (sourceName?.Length ?? 0) + (exMessage?.Length ?? 0) + 5);
+
+            builder.Append('[');
+            builder.Append(DateTime.Now);
+            builder.Append("] ");
+
             if (sourceName != null)
             {
                 builder.Append('[');
