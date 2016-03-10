@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DiscordBot.Modules.Random
 {
-    public class RandomModule : IModule
+    internal class RandomModule : IModule
     {
         private ModuleManager _manager;
         private DiscordClient _client;

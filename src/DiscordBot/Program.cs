@@ -46,12 +46,11 @@ namespace DiscordBot
                 x.AppName = AppName;
                 x.AppUrl = AppUrl;
                 x.MessageCacheSize = 0;
-                x.UsePermissionsCache = false;
+                x.UsePermissionsCache = true;
                 x.EnablePreUpdateEvents = true;
-                x.LogLevel = LogSeverity.Info;
+                x.LogLevel = LogSeverity.Debug;
                 x.LogHandler = OnLogMessage;
             })
-
             .UsingCommands(x =>
             {
                 x.AllowMentionPrefix = true;
@@ -68,24 +67,26 @@ namespace DiscordBot
                 x.Bitrate = AudioServiceConfig.MaxBitrate;
                 x.BufferLength = 10000;
             })
-            .UsingPermissionLevels(PermissionResolver)
+            .UsingPermissionLevels(PermissionResolver);
 
-            .AddService<SettingsService>()
-            .AddService<HttpService>()
+            _client.AddService<SettingsService>();
+            _client.AddService<HttpService>();
 
-            //.AddModule<AdminModule>("Admin", ModuleFilter.ServerWhitelist)
-            .AddModule<BorderModule>("Border", ModuleFilter.None)
-            //.AddModule<ColorsModule>("Colors", ModuleFilter.ServerWhitelist)
-            //.AddModule<FeedModule>("Feeds", ModuleFilter.ServerWhitelist)
-            .AddModule<FinanceModule>("Finance", ModuleFilter.None)
-            .AddModule<RandomModule>("Random", ModuleFilter.None)
-            //.AddModule<GithubModule>("Repos", ModuleFilter.ServerWhitelist)
-            .AddModule<ModulesModule>("Modules", ModuleFilter.None)
-            .AddModule<PublicModule>("Public", ModuleFilter.None)
-            //.AddModule<TwitchModule>("Twitch", ModuleFilter.ServerWhitelist)
-            //.AddModule<StatusModule>("Status", ModuleFilter.ServerWhitelist);
-            .AddModule<StarlightStageModule>("StarlightStage", ModuleFilter.None);
-            //.AddModule(new ExecuteModule(env, exporter), "Execute", ModuleFilter.ServerWhitelist);            
+            _client.AddModule<AdminModule>("Admin", ModuleFilter.ServerWhitelist);
+            _client.AddModule<ColorsModule>("Colors", ModuleFilter.ServerWhitelist);
+            _client.AddModule<FeedModule>("Feeds", ModuleFilter.ServerWhitelist);
+            //_client.AddModule<GithubModule>("Repos", ModuleFilter.ServerWhitelist);
+            _client.AddModule<ModulesModule>("Modules", ModuleFilter.None);
+            _client.AddModule<PublicModule>("Public", ModuleFilter.None);
+            //_client.AddModule<TwitchModule>("Twitch", ModuleFilter.ServerWhitelist);
+            _client.AddModule<StatusModule>("Status", ModuleFilter.ServerWhitelist);
+
+            _client.AddModule<BorderModule>("Border", ModuleFilter.None);
+            _client.AddModule<FinanceModule>("Finance", ModuleFilter.None);
+            _client.AddModule<RandomModule>("Random", ModuleFilter.None);
+            _client.AddModule<StarlightStageModule>("StarlightStage", ModuleFilter.None);
+
+            //_client.AddModule(new ExecuteModule(env, exporter), "Execute", ModuleFilter.ServerWhitelist);
 
 #if PRIVATE
             PrivateModules.Install(_client);
@@ -101,7 +102,8 @@ namespace DiscordBot
                     try
                     {
                         await _client.Connect(GlobalSettings.Discord.Email, GlobalSettings.Discord.Password);
-                        //_client.SetGame("games");
+                        //_client.SetGame("Discord.Net");
+                        //await _client.ClientAPI.Send(new Discord.API.Client.Rest.HealthRequest());
                         break;
                     }
                     catch (Exception ex)
@@ -113,29 +115,27 @@ namespace DiscordBot
             });
         }
 
-        //Display errors that occur when a user tries to run a command
-        //(In this case, we hide argcount, parsing and unknown command errors to reduce spam in servers with multiple bots)
         private void OnCommandError(object sender, CommandErrorEventArgs e)
         {
-            string msg = e.Exception?.GetBaseException().Message;
+            string msg = e.Exception?.Message;
             if (msg == null) //No exception - show a generic message
             {
                 switch (e.ErrorType)
                 {
                     case CommandErrorType.Exception:
-                        //msg = "Unknown error.";
+                        msg = "Unknown error.";
                         break;
                     case CommandErrorType.BadPermissions:
                         msg = "You do not have permission to run this command.";
                         break;
                     case CommandErrorType.BadArgCount:
-                        //msg = "You provided the incorrect number of arguments for this command.";
+                        msg = "You provided the incorrect number of arguments for this command.";
                         break;
                     case CommandErrorType.InvalidInput:
-                        //msg = "Unable to parse your command, please check your input.";
+                        msg = "Unable to parse your command, please check your input.";
                         break;
                     case CommandErrorType.UnknownCommand:
-                        //msg = "Unknown command.";
+                        msg = "Unknown command.";
                         break;
                 }
             }
@@ -189,12 +189,7 @@ namespace DiscordBot
                 text = e.Message;
 
             //Build message
-            StringBuilder builder = new StringBuilder(text.Length + (sourceName?.Length ?? 0) + (exMessage?.Length ?? 0) + 25);
-
-            builder.Append('[');
-            builder.Append(DateTime.Now);
-            builder.Append("] ");
-
+            StringBuilder builder = new StringBuilder(text.Length + (sourceName?.Length ?? 0) + (exMessage?.Length ?? 0) + 5);
             if (sourceName != null)
             {
                 builder.Append('[');
@@ -215,8 +210,6 @@ namespace DiscordBot
             }
 
             text = builder.ToString();
-            //if (e.Severity <= LogSeverity.Info)
-            //{
             Console.ForegroundColor = color;
             Console.WriteLine(text);
 
@@ -224,11 +217,6 @@ namespace DiscordBot
             {
                 w.WriteLine(text);
             }
-
-            //}
-            /*#if DEBUG
-                        System.Diagnostics.Debug.WriteLine(text);
-            #endif*/
         }
 
         private int PermissionResolver(User user, Channel channel)

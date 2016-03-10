@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace DiscordBot.Modules.Finance
 {
-    public class FinanceModule : IModule
+    internal class FinanceModule : IModule
     {
         private ModuleManager _manager;
         private DiscordClient _client;

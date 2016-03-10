@@ -9,7 +9,7 @@ using System.IO;
 
 namespace DiscordBot.Modules.Border
 {
-    public class BorderModule : IModule
+    internal class BorderModule : IModule
     {
         private ModuleManager _manager;
         private DiscordClient _client;

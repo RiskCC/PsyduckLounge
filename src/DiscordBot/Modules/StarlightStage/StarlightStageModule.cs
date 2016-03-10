@@ -1,28 +1,31 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.Modules;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DiscordBot.Modules.StarlightStage
 {
-    public class StarlightStageModule : IModule
+    internal class StarlightStageModule : IModule
     {
         private ModuleManager _manager;
         private DiscordClient _client;
-        private string filePath = Environment.GetEnvironmentVariable("LocalAppData") + "\\UmiBot.bin";
-        private Dictionary<string, string> writeDictionary = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        private Dictionary<string, string> readDictionary = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private string filePath = "UmiBot.json";
+        private List<Account> accounts;
         private string result, name, id;
 
         void IModule.Install(ModuleManager manager)
         {
             _manager = manager;
             _client = _manager.Client;
+
+            LoadJson();
 
             manager.CreateCommands("ss", group =>
             {
@@ -46,12 +49,29 @@ namespace DiscordBot.Modules.StarlightStage
             });
         }
 
+        private void LoadJson()
+        {
+            try
+            {
+                using (StreamReader r = new StreamReader(filePath))
+                {
+                    string json = r.ReadToEnd();
+                    accounts = JsonConvert.DeserializeObject<List<Account>>(json);
+                }
+            }
+            catch (Exception ex)
+            {
+                File.Create(filePath);
+            }
+        }
+
         private async void AddMe(CommandEventArgs e)
         {
             try
             {
                 string[] parsedArgs = e.Args[0].Split(' ');
                 name = parsedArgs[0];
+
                 if (Regex.IsMatch(parsedArgs[1], "^[0-9]{9}$"))
                 {
                     id = parsedArgs[1];
@@ -61,8 +81,7 @@ namespace DiscordBot.Modules.StarlightStage
                     throw new SystemException("Invalid ID");
                 }
 
-                writeDictionary[name] = id;
-                Write(writeDictionary, filePath);
+                Write(name, id);
 
                 result = $"{name.ToString()} added";
             }
@@ -77,11 +96,11 @@ namespace DiscordBot.Modules.StarlightStage
         private async void GetMe(CommandEventArgs e)
         {
             try
-            {               
-                readDictionary = Read(filePath);
-                readDictionary.TryGetValue(e.Args[0], out id);
+            {
 
-                if (id == null)
+                id = Read(e.Args[0]);
+
+                if (String.IsNullOrWhiteSpace(id))
                 {
                     throw new SystemException();
                 }
@@ -103,39 +122,49 @@ namespace DiscordBot.Modules.StarlightStage
             await e.Channel.SendMessage($"{result}");
         }
 
-        private static void Write(Dictionary<string, string> dictionary, string file)
+        private void Write(string name, string id)
         {
-            using (FileStream fs = File.OpenWrite(file))
-            using (BinaryWriter writer = new BinaryWriter(fs))
+            Account psyduck = new Account()
             {
-                // Put count.
-                writer.Write(dictionary.Count);
-                // Write pairs.
-                foreach (var pair in dictionary)
-                {
-                    writer.Write(pair.Key);
-                    writer.Write(pair.Value);
-                }
+                name = name,
+                id = id
+            };
+
+            int index = accounts.FindLastIndex(s => s.name == psyduck.name);
+            if (index != -1)
+            {
+                accounts[index] = psyduck;
             }
+            else
+            {
+                accounts.Add(psyduck);
+            }
+
+            string json = JsonConvert.SerializeObject(accounts.ToArray());
+
+            //write string to file
+            System.IO.File.WriteAllText($"{filePath}", json);
         }
 
-        private static Dictionary<string, string> Read(string file)
+        private string Read(string name)
         {
-            var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            using (FileStream fs = File.OpenRead(file))
-            using (BinaryReader reader = new BinaryReader(fs))
+            var result = "";
+
+            foreach (Account a in accounts)
             {
-                // Get count.
-                int count = reader.ReadInt32();
-                // Read in all pairs.
-                for (int i = 0; i < count; i++)
+                if (String.Equals(a.name, name, StringComparison.OrdinalIgnoreCase))
                 {
-                    string key = reader.ReadString();
-                    string value = reader.ReadString();
-                    result[key] = value;
+                    result = a.id;
                 }
             }
+
             return result;
         }
+    }
+
+    internal class Account
+    {
+        public string name;
+        public string id;
     }
 }
