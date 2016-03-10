@@ -12,6 +12,7 @@ using DiscordBot.Modules.Github;
 using DiscordBot.Modules.Modules;
 using DiscordBot.Modules.Public;
 using DiscordBot.Modules.Random;
+using DiscordBot.Modules.StarlightStage;
 using DiscordBot.Modules.Status;
 using DiscordBot.Modules.Twitch;
 using DiscordBot.Services;
@@ -80,9 +81,10 @@ namespace DiscordBot
             .AddModule<RandomModule>("Random", ModuleFilter.None)
             //.AddModule<GithubModule>("Repos", ModuleFilter.ServerWhitelist)
             .AddModule<ModulesModule>("Modules", ModuleFilter.None)
-            .AddModule<PublicModule>("Public", ModuleFilter.None);
+            .AddModule<PublicModule>("Public", ModuleFilter.None)
             //.AddModule<TwitchModule>("Twitch", ModuleFilter.ServerWhitelist)
             //.AddModule<StatusModule>("Status", ModuleFilter.ServerWhitelist);
+            .AddModule<StarlightStageModule>("StarlightStage", ModuleFilter.None);
             //.AddModule(new ExecuteModule(env, exporter), "Execute", ModuleFilter.ServerWhitelist);            
 
 #if PRIVATE

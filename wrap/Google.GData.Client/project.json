@@ -4,6 +4,9 @@
     "dnx451": {
       "bin": {
         "assembly": "../../lib/dnx451/Google.GData.Client.dll"
+      },
+      "dependencies": {
+        "Newtonsoft.Json": "1.0.0-*"
       }
     }
   }

@@ -3,12 +3,12 @@
 	"description": "DiscordBot",
 	"authors": [ "Risk" ],
 	"tags": [ "discord", "discordapp" ],
-	"projectUrl": "https://github.com/RogueException/DiscordBot",
+	"projectUrl": "https://github.com/riskcc/UmiBot",
 	"licenseUrl": "http://opensource.org/licenses/MIT",
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/RogueException/DiscordBot"
-	},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/riskcc/UmiBot"
+  },
   "exclude": [ "config" ],
   "compilationOptions": {
     "emitEntryPoint": true
@@ -43,7 +43,7 @@
     "Discord.Net.Audio": "0.9.0-rc3",
     "Discord.Net.Commands": "0.9.0-rc3-1",
     "Discord.Net.Modules": "0.9.0-rc3",
-    "Newtonsoft.Json": "8.0.1"
+    "Newtonsoft.Json": "8.0.2"
   },
 
   "frameworks": {
@@ -58,7 +58,8 @@
         "Google.GData.Client": "1.0.0-*",
         "Google.GData.Extensions": "1.0.0-*",
         "Google.GData.Spreadsheets": "1.0.0-*",
-        "NAudio": "1.7.3"
+        "NAudio": "1.7.3",
+        "Newtonsoft.Json": "1.0.0-*"
       }
     }
   }
