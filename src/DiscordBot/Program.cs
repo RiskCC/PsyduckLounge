@@ -102,7 +102,8 @@ namespace DiscordBot
                     try
                     {
                         await _client.Connect(GlobalSettings.Discord.Email, GlobalSettings.Discord.Password);
-                        //_client.SetGame("Discord.Net");
+                        //_client.SetGame("debugging, sorry!");
+                        //_client.SetGame("good to go~");
                         //await _client.ClientAPI.Send(new Discord.API.Client.Rest.HealthRequest());
                         break;
                     }

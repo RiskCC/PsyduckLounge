@@ -95,6 +95,8 @@ namespace DiscordBot.Modules.StarlightStage
 
         private async void GetMe(CommandEventArgs e)
         {
+            // Discord caches images so we need to force a new image get
+            var duck = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             try
             {
                 id = Read(e.Args[0]);
@@ -103,14 +105,13 @@ namespace DiscordBot.Modules.StarlightStage
                 {
                     throw new SystemException();
                 }
-
-                result = $"https://deresute.me/{id}/medium";
+                result = $"https://deresute.me/{id}/medium?{duck}";
             }
             catch (Exception ex)
             {
                 if (Regex.IsMatch(e.Args[0], "^[0-9]{9}$"))
                 {
-                    result = $"https://deresute.me/{e.Args[0]}/medium";
+                    result = $"https://deresute.me/{e.Args[0]}/medium?{duck}";
                 }
                 else
                 {
