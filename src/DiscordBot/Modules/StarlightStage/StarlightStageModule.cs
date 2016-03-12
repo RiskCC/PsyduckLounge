@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.Commands.Permissions.Levels;
 using Discord.Modules;
 using Newtonsoft.Json;
 using System;
@@ -44,6 +45,15 @@ namespace DiscordBot.Modules.StarlightStage
                        {
                            await e.Channel.SendIsTyping();
                            AddMe(e);
+                       });
+                group.CreateCommand("remove")
+                       .Parameter("Text", ParameterType.Unparsed)
+                       .Description("Removes a user from the account list")
+                       .MinPermissions((int)PermissionLevel.ChannelAdmin)
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           RemoveMe(e);
                        });
             });
         }
@@ -121,6 +131,20 @@ namespace DiscordBot.Modules.StarlightStage
 
             await e.Channel.SendMessage($"{result}");
         }
+
+        private async void RemoveMe(CommandEventArgs e)
+        {
+            try
+            {
+                accounts.Remove(new Account() { name = e.Args[0], id = "000000000" });
+                await e.Channel.SendMessage($"{e.Args[0]} removed");
+            }
+            catch (Exception ex)
+            {
+                await e.Channel.SendMessage($"{e.Args[0]} not removed");
+            }
+        }
+
 
         private void Write(string name, string id)
         {
