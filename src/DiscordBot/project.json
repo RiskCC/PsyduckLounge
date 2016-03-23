@@ -43,7 +43,8 @@
     "Discord.Net.Audio": "0.9.0-rc3",
     "Discord.Net.Commands": "0.9.0-rc3-1",
     "Discord.Net.Modules": "0.9.0-rc3",
-    "Newtonsoft.Json": "8.0.1"
+    "Newtonsoft.Json": "8.0.1",
+    "TweetinviAPI": "0.9.11.2"
   },
 
   "frameworks": {

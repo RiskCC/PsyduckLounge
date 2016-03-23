@@ -2,14 +2,18 @@
 using Discord.Commands;
 using Discord.Commands.Permissions.Levels;
 using Discord.Modules;
+using DiscordBot.Modules.Border;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Tweetinvi;
+using Tweetinvi.Core.Interfaces;
 
 namespace DiscordBot.Modules.StarlightStage
 {
@@ -21,6 +25,7 @@ namespace DiscordBot.Modules.StarlightStage
         private List<Account> accounts = new List<Account>();
         private string result, name, id;
 
+
         void IModule.Install(ModuleManager manager)
         {
             _manager = manager;
@@ -28,10 +33,21 @@ namespace DiscordBot.Modules.StarlightStage
 
             LoadJson();
 
+            Auth.SetUserCredentials("puUyHZAWmiIFNSKgVDI6vvAIp", "CBSs0PBUkxsEx4kmthTZ4D8ZsXcuOheusnf570UDQzh4YkqFlr", "2941442070-EBKDQP74XxIE82HRlNhht11VYF4H46aNhkx6uM2", "5pLSEWJZqaIejDo7J0FnaHkJ6YfjiF35AenxmVIzhTOzV");
+
             manager.CreateCommands("ss", group =>
             {
+                group.CreateCommand("help")
+                       .Description("Returns the usage for SS module.")
+                       .Do(e =>
+                       {
+                           return _client.Reply(e,
+                               $"Usage:\n" +
+                               "ss get [name or id] : get user by name or account ID\n" +
+                               "ss add [name] [id]  : associate name to account ID\n");
+                       });
                 group.CreateCommand("get")
-                       .Parameter("Text", ParameterType.Required)
+                       .Parameter("name | id", ParameterType.Required)
                        .Description("Gets user info based off account ID")
                        .Do(async e =>
                        {
@@ -39,8 +55,8 @@ namespace DiscordBot.Modules.StarlightStage
                            GetMe(e);
                        });
                 group.CreateCommand("add")
-                       .Parameter("Text", ParameterType.Unparsed)
-                       .Description("Adds user info to an account list")
+                       .Parameter("name id", ParameterType.Unparsed)
+                       .Description("Adds user info to the account list")
                        .Do(async e =>
                        {
                            await e.Channel.SendIsTyping();
@@ -55,7 +71,31 @@ namespace DiscordBot.Modules.StarlightStage
                            await e.Channel.SendIsTyping();
                            RemoveMe(e);
                        });
+                group.CreateCommand("border")
+                       .Description("Alternate method to call border ss")
+                       .Do(e =>
+                       {
+                           BorderModule bm = new BorderModule();
+                           return bm.GetBorderSS(e, "");
+                       });
+                group.CreateCommand("prediction")
+                       .Description("Get last prediction tweet")
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           GetLastPredictionTweet(e);
+                       });
             });
+        }
+
+        private async void GetLastPredictionTweet(CommandEventArgs e)
+        {
+            var accts = Search.SearchUsers("cindere_border");
+            var acct = accts.First();
+            var lastTweets = acct.GetUserTimeline(1);
+            var lastTweet = lastTweets.FirstOrDefault();
+            await e.Channel.SendMessage($"{lastTweet.Text.ToString()}");
+
         }
 
         private void LoadJson()
@@ -125,7 +165,7 @@ namespace DiscordBot.Modules.StarlightStage
                 }
                 else
                 {
-                    result = "Try again (๑◕︵◕๑)";
+                    result = "not found; try again (๑◕︵◕๑)";
                 }
             }
 
@@ -136,8 +176,10 @@ namespace DiscordBot.Modules.StarlightStage
         {
             try
             {
-                accounts.Remove(new Account() { name = e.Args[0], id = "000000000" });
-                await e.Channel.SendMessage($"{e.Args[0]} removed");
+                //accounts.Remove(new Account() { name = e.Args[0], id = "000000000" });
+                //await e.Channel.SendMessage($"{e.Args[0]} removed");
+                await e.Channel.SendMessage($"this doesn't do anything yet, sorry~");
+
             }
             catch (Exception ex)
             {

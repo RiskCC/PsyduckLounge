@@ -29,6 +29,16 @@ namespace DiscordBot.Modules.Border
             
             manager.CreateCommands("border", group =>
             {
+                group.CreateCommand("")
+                       .Description("Returns the usage for Border module.")
+                       .Do(e =>
+                       {
+                           return _client.Reply(e,
+                               $"Usage: border <game>\n" +
+                               "ss - Starlight Stage\n" +
+                               "sifen - School Idol Festival English\n" +
+                               "sifjp - School Idol Festival Japanese");
+                       });
                 group.CreateCommand("help")
                        .Description("Returns the usage for Border module.")
                        .Do(e =>
@@ -60,7 +70,7 @@ namespace DiscordBot.Modules.Border
             });
         }
 
-        private async Task GetBorderSS(CommandEventArgs e, string target)
+        public async Task GetBorderSS(CommandEventArgs e, string target)
         {
             await e.Channel.SendIsTyping();
             csv = GetCSV(ssCsv);

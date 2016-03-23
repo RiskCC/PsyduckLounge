@@ -49,6 +49,13 @@ namespace DiscordBot.Modules.Random
                            await e.Channel.SendIsTyping();
                            await e.Channel.SendMessage($"http://i.imgur.com/eLHoLCC.png");
                        });
+                group.CreateCommand("Neal nudes")
+                       .Description("Random 005 for Neal")
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"http://i.imgur.com/I4tI1tL.gif");
+                       });
                 group.CreateCommand("Risk plz")
                        .Description("Random 005 for Risk")
                        .Do(async e =>
@@ -62,6 +69,13 @@ namespace DiscordBot.Modules.Random
                            {
                                await e.Channel.SendMessage($"http://i.imgur.com/6r5RTzu.gif");
                            }
+                       });
+                group.CreateCommand("jew")
+                       .Description("A picture of a Jew")
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"http://i.imgur.com/DUJ0IG5.png");
                        });
 
                 group.CreateCommand("sleep")
