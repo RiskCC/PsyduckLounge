@@ -22,8 +22,11 @@ namespace DiscordBot.Modules.StarlightStage
         private ModuleManager _manager;
         private DiscordClient _client;
         private string filePath = "UmiBot.json";
+        private string filePath2 = "tweetinvi.json";
         private List<Account> accounts = new List<Account>();
+        private List<Keys> keys = new List<Keys>();
         private string result, name, id;
+        private string consumerKey, consumerSecret, accessToken, accessTokenSecret;
 
 
         void IModule.Install(ModuleManager manager)
@@ -32,8 +35,8 @@ namespace DiscordBot.Modules.StarlightStage
             _client = _manager.Client;
 
             LoadJson();
-
-            Auth.SetUserCredentials("puUyHZAWmiIFNSKgVDI6vvAIp", "CBSs0PBUkxsEx4kmthTZ4D8ZsXcuOheusnf570UDQzh4YkqFlr", "2941442070-EBKDQP74XxIE82HRlNhht11VYF4H46aNhkx6uM2", "5pLSEWJZqaIejDo7J0FnaHkJ6YfjiF35AenxmVIzhTOzV");
+            LoadKeys();
+            Auth.SetUserCredentials(keys[0].consumerKey, keys[0].consumerSecret, keys[0].accessToken, keys[0].accessTokenSecret);
 
             manager.CreateCommands("ss", group =>
             {
@@ -114,7 +117,14 @@ namespace DiscordBot.Modules.StarlightStage
                     File.Create(filePath);
             }
         }
-
+        private void LoadKeys()
+        {
+            using (StreamReader r = new StreamReader(filePath2))
+            {
+                string json = r.ReadToEnd();
+                keys = JsonConvert.DeserializeObject<List<Keys>>(json);
+            }
+        }
         private async void AddMe(CommandEventArgs e)
         {
             try
@@ -222,6 +232,14 @@ namespace DiscordBot.Modules.StarlightStage
             }
             return "";
         }
+    }
+
+    internal class Keys
+    {
+        public string consumerKey;
+        public string consumerSecret;
+        public string accessToken;
+        public string accessTokenSecret;
     }
 
     internal class Account
