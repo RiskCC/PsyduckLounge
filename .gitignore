@@ -203,6 +203,7 @@ project.lock.json
 /src/DiscordBot/config
 /src/DiscordBot/UmiBot.log
 /src/DiscordBot/UmiBot.json
+/src/DiscordBot/tweetinvi.json
 /src/DiscordBot/ffmpeg.exe
 /src/DiscordBot/PrivateModules
 /src/DiscordBot/opus.dll

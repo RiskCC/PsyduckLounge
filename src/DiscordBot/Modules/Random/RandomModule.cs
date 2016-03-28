@@ -93,24 +93,31 @@ namespace DiscordBot.Modules.Random
         private string GetSleep(CommandEventArgs e)
         {
             string sleepUrl = "";
-            string[] imageUrl = { "http://i.imgur.com/RKlZlOQ.jpg", "http://i.imgur.com/RG4umjv.png", "http://i.imgur.com/qcCNi62.jpg", "http://i.imgur.com/mZm7u5Y.png", "http://i.imgur.com/tEL3LID.jpg", "http://i.imgur.com/I5Wc8JB.jpg" };
-
+            string[] imageUrl = {
+                "http://i.imgur.com/RKlZlOQ.jpg",
+                "http://i.imgur.com/RG4umjv.png",
+                "http://i.imgur.com/qcCNi62.jpg",
+                "http://i.imgur.com/mZm7u5Y.png",
+                "http://i.imgur.com/tEL3LID.jpg",
+                "http://i.imgur.com/I5Wc8JB.jpg"
+            };
+            int maxImageUrls = 6;
             try
             {
                 int request = Int32.Parse(e.Args[0]);
 
-                if (request >= 0 && request < 6)
+                if (request >= 0 && request < maxImageUrls)
                 {
                     sleepUrl = imageUrl[request];
                 }
                 else
                 {
-                    sleepUrl = imageUrl[x.Next(0, 6)];
+                    sleepUrl = imageUrl[x.Next(0, maxImageUrls)];
                 }
             }
             catch (Exception ex)
             {
-                sleepUrl = imageUrl[x.Next(0, 6)];
+                sleepUrl = imageUrl[x.Next(0, maxImageUrls)];
             }
 
             return sleepUrl;
