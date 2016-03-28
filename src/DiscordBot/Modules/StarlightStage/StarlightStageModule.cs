@@ -21,8 +21,8 @@ namespace DiscordBot.Modules.StarlightStage
     {
         private ModuleManager _manager;
         private DiscordClient _client;
-        private string filePath = "UmiBot.json";
-        private string filePath2 = "tweetinvi.json";
+        private string filePath = "./config/UmiBot.json";
+        private string filePath2 = "./config/tweetinvi.json";
         private List<Account> accounts = new List<Account>();
         private List<Keys> keys = new List<Keys>();
         private string result, name, id;

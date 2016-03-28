@@ -29,7 +29,7 @@ namespace DiscordBot
 
         private const string AppName = "UmiBot";
         private const string AppUrl = "https://github.com/RiskCC/UmiBot";
-        private string LogFile = "UmiBot.log";
+        private string LogFile = "./config/UmiBot.log";
 
         private DiscordClient _client;
 
