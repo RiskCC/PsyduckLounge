@@ -1,8 +1,10 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.Modules;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,6 +15,7 @@ namespace DiscordBot.Modules.Random
         private ModuleManager _manager;
         private DiscordClient _client;
         private System.Random x = new System.Random();
+        private string imagesJson = "./config/images.json";
 
         void IModule.Install(ModuleManager manager)
         {
@@ -86,6 +89,14 @@ namespace DiscordBot.Modules.Random
                            await e.Channel.SendIsTyping();
                            await e.Channel.SendMessage($"{GetSleep(e)}");
                        });
+                group.CreateCommand("gj")
+                       .Parameter("Text", ParameterType.Multiple)
+                       .Description("Gets a GJ-bu gif")
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"{GetGj(e)}");
+                       });
             });
 
         }
@@ -101,6 +112,7 @@ namespace DiscordBot.Modules.Random
                 "http://i.imgur.com/tEL3LID.jpg",
                 "http://i.imgur.com/I5Wc8JB.jpg"
             };
+
             int maxImageUrls = 6;
             try
             {
@@ -123,5 +135,115 @@ namespace DiscordBot.Modules.Random
             return sleepUrl;
         }
 
+        private string GetGj(CommandEventArgs e)
+        {
+            string gjUrl = "";
+            LoadGjGif(imagesJson);
+            string girl = "";
+            int image = 0;
+
+            try
+            {
+                image = Int32.Parse(e.Args[1]);
+            }
+            catch (Exception ex)
+            {
+                image = -1;
+            }
+
+            try
+            {
+                girl = e.Args[0];
+                switch (girl)
+                {
+                    case "mao":
+                        if (image == -1)
+                            image = x.Next(0, gj.mao.Count());
+                        gjUrl = gj.mao[image];
+                        break;
+                    case "shi":
+                    case "shion":
+                        if (image == -1)
+                            image = x.Next(0, gj.shi.Count());
+                        gjUrl = gj.shi[image];
+                        break;
+                    case "kirara":
+                        if (image == -1)
+                            image = x.Next(0, gj.kirara.Count());
+                        gjUrl = gj.kirara[image];
+                        break;
+                    case "megu":
+                    case "megumi":
+                        if (image == -1)
+                            image = x.Next(0, gj.megu.Count());
+                        gjUrl = gj.megu[image];
+                        break;
+                    case "tama":
+                    case "tamaki":
+                        if (image == -1)
+                            image = x.Next(0, gj.tama.Count());
+                        gjUrl = gj.tama[image];
+                        break;
+                    case "other":
+                        if (image == -1)
+                            image = x.Next(0, gj.other.Count());
+                        gjUrl = gj.other[image];
+                        break;
+                    default:
+                        throw new KeyNotFoundException("girl not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                int randGrill = x.Next(0, 6);
+                switch (randGrill)
+                {
+                    case 0:
+                        image = x.Next(0, gj.mao.Count());
+                        gjUrl = gj.mao[image];
+                        break;
+                    case 1:
+                        image = x.Next(0, gj.shi.Count());
+                        gjUrl = gj.shi[image];
+                        break;
+                    case 2:
+                        image = x.Next(0, gj.kirara.Count());
+                        gjUrl = gj.kirara[image];
+                        break;
+                    case 3:
+                        image = x.Next(0, gj.megu.Count());
+                        gjUrl = gj.megu[image];
+                        break;
+                    case 4:
+                        image = x.Next(0, gj.tama.Count());
+                        gjUrl = gj.tama[image];
+                        break;
+                    case 5:
+                        image = x.Next(0, gj.other.Count());
+                        gjUrl = gj.other[image];
+                        break;
+                }
+            }
+            return gjUrl;
+
+        }
+
+        private void LoadGjGif(string filePath)
+        {
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException($"{filePath} is missing.");
+            gj = JsonConvert.DeserializeObject<GjGif>(File.ReadAllText(filePath));
+        }
+
+        internal class GjGif
+        {
+            public string[] mao;
+            public string[] shi;
+            public string[] kirara;
+            public string[] megu;
+            public string[] tama;
+            public string[] other;
+        }
+        private GjGif gj = new GjGif();
     }
 }
