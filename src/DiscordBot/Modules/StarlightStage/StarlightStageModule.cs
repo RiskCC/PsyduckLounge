@@ -44,21 +44,23 @@ namespace DiscordBot.Modules.StarlightStage
                        .Description("Returns the usage for SS module.")
                        .Do(e =>
                        {
-                           return _client.Reply(e,
+                           return e.Channel.SendMessage(
                                $"Usage:\n" +
-                               "ss get [name or id] : get user by name or account ID\n" +
-                               "ss add [name] [id]  : associate name to account ID\n");
+                               "ss get *id*  : get user by account ID #\n" +
+                               "ss get *name*  : get user by name if already added with \"ss add\"\n" +
+                               "ss add *name* *id*  : associate account ID # with a name\n");
                        });
                 group.CreateCommand("get")
-                       .Parameter("name | id", ParameterType.Required)
-                       .Description("Gets user info based off account ID")
+                       .Parameter("name|id", ParameterType.Required)
+                       .Description("Gets user info based off account ID or name")
                        .Do(async e =>
                        {
                            await e.Channel.SendIsTyping();
                            GetMe(e);
                        });
                 group.CreateCommand("add")
-                       .Parameter("name id", ParameterType.Unparsed)
+                       .Parameter("name", ParameterType.Required)
+                       .Parameter("id", ParameterType.Required)
                        .Description("Adds user info to the account list")
                        .Do(async e =>
                        {
@@ -66,9 +68,9 @@ namespace DiscordBot.Modules.StarlightStage
                            AddMe(e);
                        });
                 group.CreateCommand("remove")
-                       .Parameter("Text", ParameterType.Unparsed)
+                       .Parameter("Text", ParameterType.Required)
                        .Description("Removes a user from the account list")
-                       .MinPermissions((int)PermissionLevel.ChannelAdmin)
+                       .MinPermissions((int)PermissionLevel.BotOwner)
                        .Do(async e =>
                        {
                            await e.Channel.SendIsTyping();
@@ -129,12 +131,11 @@ namespace DiscordBot.Modules.StarlightStage
         {
             try
             {
-                string[] parsedArgs = e.Args[0].Split(' ');
-                name = parsedArgs[0];
+                name = e.Args[0];
 
-                if (Regex.IsMatch(parsedArgs[1], "^[0-9]{9}$"))
+                if (Regex.IsMatch(e.Args[1], "^[0-9]{9}$"))
                 {
-                    id = parsedArgs[1];
+                    id = e.Args[1];
                 }
                 else
                 {
@@ -186,9 +187,10 @@ namespace DiscordBot.Modules.StarlightStage
         {
             try
             {
-                //accounts.Remove(new Account() { name = e.Args[0], id = "000000000" });
-                //await e.Channel.SendMessage($"{e.Args[0]} removed");
-                await e.Channel.SendMessage($"this doesn't do anything yet, sorry~");
+                accounts.RemoveAll(a => a.name == e.Args[0]);
+                SaveJson();
+                await e.Channel.SendMessage($"{e.Args[0]} removed");
+                //await e.Channel.SendMessage($"this doesn't do anything yet, sorry~");
 
             }
             catch (Exception ex)
@@ -197,6 +199,12 @@ namespace DiscordBot.Modules.StarlightStage
             }
         }
 
+        private void SaveJson()
+        {
+            string json = JsonConvert.SerializeObject(accounts.ToArray());
+
+            System.IO.File.WriteAllText($"{filePath}", json);
+        }
 
         private void Write(string name, string id)
         {
@@ -216,9 +224,7 @@ namespace DiscordBot.Modules.StarlightStage
                 accounts.Add(psyduck);
             }
 
-            string json = JsonConvert.SerializeObject(accounts.ToArray());
-
-            System.IO.File.WriteAllText($"{filePath}", json);
+            SaveJson();
         }
 
         private string Read(string name)
