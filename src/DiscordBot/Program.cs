@@ -124,19 +124,19 @@ namespace DiscordBot
                 switch (e.ErrorType)
                 {
                     case CommandErrorType.Exception:
-                        msg = "Unknown error.";
+                        msg = "Unknown error. ಠ╭╮ಠ";
                         break;
                     case CommandErrorType.BadPermissions:
-                        msg = "You do not have permission to run this command.";
+                        msg = "You do not have permission to run this command. (;﹏;)";
                         break;
                     case CommandErrorType.BadArgCount:
-                        msg = "You provided the incorrect number of arguments for this command.";
+                        msg = "You provided the incorrect number of arguments for this command. （；￣д￣）";
                         break;
                     case CommandErrorType.InvalidInput:
-                        msg = "Unable to parse your command, please check your input.";
+                        msg = "Unable to parse your command, please check your input. o(TヘTo)";
                         break;
                     case CommandErrorType.UnknownCommand:
-                        msg = "Unknown command.";
+                        msg = "Unknown command. .·´¯`(>▂<)´¯`·.";
                         break;
                 }
             }
@@ -229,6 +229,8 @@ namespace DiscordBot
         {
             if (user.Id == GlobalSettings.Users.DevId)
                 return (int)PermissionLevel.BotOwner;
+            if (user.Id == GlobalSettings.Users.RageId)
+                return (int)PermissionLevel.UserPlus;
             if (user.Server != null)
             {
                 if (user == channel.Server.Owner)

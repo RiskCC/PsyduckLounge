@@ -1,11 +1,15 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.Commands.Permissions.Levels;
 using Discord.Modules;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace DiscordBot.Modules.Random
@@ -21,6 +25,8 @@ namespace DiscordBot.Modules.Random
         {
             _manager = manager;
             _client = _manager.Client;
+
+            LoadGifJson(imagesJson);
 
             manager.CreateCommands("", group =>
             {
@@ -90,15 +96,81 @@ namespace DiscordBot.Modules.Random
                            await e.Channel.SendMessage($"{GetSleep(e)}");
                        });
                 group.CreateCommand("gj")
-                       .Parameter("Text", ParameterType.Multiple)
+                       .Parameter("girl #", ParameterType.Multiple)
                        .Description("Gets a GJ-bu gif")
                        .Do(async e =>
                        {
                            await e.Channel.SendIsTyping();
                            await e.Channel.SendMessage($"{GetGj(e)}");
                        });
+                group.CreateCommand("yryr")
+                       .Parameter("girl #", ParameterType.Multiple)
+                       .Description("Gets a YuruYuri gif")
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"{GetYryr(e)}");
+                       });
+                group.CreateCommand("addgif")
+                       .Parameter("list", ParameterType.Required)
+                       .Parameter("girl", ParameterType.Required)
+                       .Parameter("url", ParameterType.Required)
+                       .Description("Adds a gif to a list")
+                       .MinPermissions((int)PermissionLevel.UserPlus)
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"{AddGif(e)}");
+                       });
             });
+        }
 
+        private void WriteJson(string filePath)
+        {
+            string json = JsonConvert.SerializeObject(giflist, Formatting.Indented);
+            System.IO.File.WriteAllText($"{filePath}", json);
+        }
+
+        private string AddGif(CommandEventArgs e)
+        {
+            string series = e.Args[0];
+            string girl = e.Args[1];
+            string url = e.Args[2];
+
+            switch (series)
+            {
+                case "gj":
+                    try
+                    {
+                        string[] urlArray = gj[girl] as string[];
+                        List<string> urlList = urlArray.ToList<string>();
+                        urlList.Add(url);
+                        gj[girl] = urlList.ToArray();
+                    }
+                    catch (Exception ex)
+                    {
+                        return $"Unsuccessful addgif using {series} {girl} {url}";
+                    }
+                    break;
+                case "yryr":
+                    try
+                    {
+                        string[] urlArray = yryr[girl] as string[];
+                        List<string> urlList = urlArray.ToList<string>();
+                        urlList.Add(url);
+                        yryr[girl] = urlList.ToArray();
+                    }
+                    catch (Exception ex)
+                    {
+                        return $"Unsuccessful addgif using {series} {girl}";
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            WriteJson(imagesJson);
+            return $"Add successful to {series} {girl}";
         }
 
         private string GetSleep(CommandEventArgs e)
@@ -135,10 +207,93 @@ namespace DiscordBot.Modules.Random
             return sleepUrl;
         }
 
+        private string GetYryr(CommandEventArgs e)
+        {
+            LoadGifJson(imagesJson);
+            string girl = "";
+            int image = 0;
+            string[] urls = null;
+            string url;
+
+            try
+            {
+                image = Int32.Parse(e.Args[1]);
+            }
+            catch (Exception ex)
+            {
+                image = -1;
+            }
+
+            try
+            {
+                girl = e.Args[0];
+                urls = yryr[girl] as string[];
+            }
+            catch (Exception ex)
+            {
+                int randGrill = x.Next(0, yryr.GetType().GetProperties().Count() - 1);
+                switch (randGrill)
+                {
+                    case 0:
+                        image = x.Next(0, yryr.akari.Count());
+                        url = yryr.akari[image];
+                        break;
+                    case 1:
+                        image = x.Next(0, yryr.kyoko.Count());
+                        url = yryr.kyoko[image];
+                        break;
+                    case 2:
+                        image = x.Next(0, yryr.yui.Count());
+                        url = yryr.yui[image];
+                        break;
+                    case 3:
+                        image = x.Next(0, yryr.chinatsu.Count());
+                        url = yryr.chinatsu[image];
+                        break;
+                    case 4:
+                        image = x.Next(0, yryr.ayano.Count());
+                        url = yryr.ayano[image];
+                        break;
+                    case 6:
+                        image = x.Next(0, yryr.chitose.Count());
+                        url = yryr.chitose[image];
+                        break;
+                    case 7:
+                        image = x.Next(0, yryr.sakurako.Count());
+                        url = yryr.sakurako[image];
+                        break;
+                    case 8:
+                        image = x.Next(0, yryr.himawari.Count());
+                        url = yryr.himawari[image];
+                        break;
+                    case 9:
+                        image = x.Next(0, yryr.other.Count());
+                        url = yryr.other[image];
+                        break;
+                    default:
+                        image = x.Next(0, yryr.himawari.Count());
+                        url = yryr.himawari[image];
+                        break;
+                }
+                return $"{url}";
+            }
+
+            try
+            {
+                return $"{urls[image]}";
+            }
+            catch (Exception ex)
+            {
+                image = x.Next(0, urls.Count());
+                return $"{urls[image]}";
+            }
+
+        }
+
         private string GetGj(CommandEventArgs e)
         {
-            string gjUrl = "";
-            LoadGjGif(imagesJson);
+            LoadGifJson(imagesJson);
+            string url = "";
             string girl = "";
             int image = 0;
 
@@ -159,35 +314,35 @@ namespace DiscordBot.Modules.Random
                     case "mao":
                         if (image == -1)
                             image = x.Next(0, gj.mao.Count());
-                        gjUrl = gj.mao[image];
+                        url = gj.mao[image];
                         break;
                     case "shi":
                     case "shion":
                         if (image == -1)
                             image = x.Next(0, gj.shi.Count());
-                        gjUrl = gj.shi[image];
+                        url = gj.shi[image];
                         break;
                     case "kirara":
                         if (image == -1)
                             image = x.Next(0, gj.kirara.Count());
-                        gjUrl = gj.kirara[image];
+                        url = gj.kirara[image];
                         break;
                     case "megu":
                     case "megumi":
                         if (image == -1)
                             image = x.Next(0, gj.megu.Count());
-                        gjUrl = gj.megu[image];
+                        url = gj.megu[image];
                         break;
                     case "tama":
                     case "tamaki":
                         if (image == -1)
                             image = x.Next(0, gj.tama.Count());
-                        gjUrl = gj.tama[image];
+                        url = gj.tama[image];
                         break;
                     case "other":
                         if (image == -1)
                             image = x.Next(0, gj.other.Count());
-                        gjUrl = gj.other[image];
+                        url = gj.other[image];
                         break;
                     default:
                         throw new KeyNotFoundException("girl not found");
@@ -200,31 +355,31 @@ namespace DiscordBot.Modules.Random
                 {
                     case 0:
                         image = x.Next(0, gj.mao.Count());
-                        gjUrl = gj.mao[image];
+                        url = gj.mao[image];
                         break;
                     case 1:
                         image = x.Next(0, gj.shi.Count());
-                        gjUrl = gj.shi[image];
+                        url = gj.shi[image];
                         break;
                     case 2:
                         image = x.Next(0, gj.kirara.Count());
-                        gjUrl = gj.kirara[image];
+                        url = gj.kirara[image];
                         break;
                     case 3:
                         image = x.Next(0, gj.megu.Count());
-                        gjUrl = gj.megu[image];
+                        url = gj.megu[image];
                         break;
                     case 4:
                         image = x.Next(0, gj.tama.Count());
-                        gjUrl = gj.tama[image];
+                        url = gj.tama[image];
                         break;
                     case 5:
                         image = x.Next(0, gj.other.Count());
-                        gjUrl = gj.other[image];
+                        url = gj.other[image];
                         break;
                 }
             }
-            return gjUrl;
+            return url;
 
         }
 
@@ -234,15 +389,76 @@ namespace DiscordBot.Modules.Random
                 throw new FileNotFoundException($"{filePath} is missing.");
             gj = JsonConvert.DeserializeObject<GjGif>(File.ReadAllText(filePath));
         }
+        private void LoadGifJson(string filePath)
+        {
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException($"{filePath} is missing.");
+            giflist = JsonConvert.DeserializeObject<Gif>(File.ReadAllText(filePath));
+            gj = giflist.gjbu;
+            yryr = giflist.yryr;
+        }
+
+        internal class Gif
+        {
+            [JsonProperty("gj")]
+            public GjGif gjbu;
+            [JsonProperty("yryr")]
+            public YryrGif yryr;
+        }
+        private Gif giflist = new Gif();
+
+        internal class YryrGif
+        {
+            public object this[string propertyName]
+            {
+                get
+                {
+                    Type myType = typeof(YryrGif);
+                    PropertyInfo myPropertyInfo = myType.GetProperty(propertyName);
+                    return myPropertyInfo.GetValue(this, null);
+                }
+                set
+                {
+                    Type myType = typeof(YryrGif);
+                    PropertyInfo myPropertyInfo = myType.GetProperty(propertyName);
+                    myPropertyInfo.SetValue(this, value, null);
+                }
+            }
+            public string[] akari { get; set; }
+            public string[] kyoko { get; set; }
+            public string[] yui { get; set; }
+            public string[] chinatsu { get; set; }
+            public string[] ayano { get; set; }
+            public string[] chitose { get; set; }
+            public string[] sakurako { get; set; }
+            public string[] himawari { get; set; }
+            public string[] other { get; set; }
+        }
+        private YryrGif yryr = new YryrGif();
 
         internal class GjGif
         {
-            public string[] mao;
-            public string[] shi;
-            public string[] kirara;
-            public string[] megu;
-            public string[] tama;
-            public string[] other;
+            public object this[string propertyName]
+            {
+                get
+                {
+                    Type myType = typeof(GjGif);
+                    PropertyInfo myPropertyInfo = myType.GetProperty(propertyName);
+                    return myPropertyInfo.GetValue(this, null);
+                }
+                set
+                {
+                    Type myType = typeof(GjGif);
+                    PropertyInfo myPropertyInfo = myType.GetProperty(propertyName);
+                    myPropertyInfo.SetValue(this, value, null);
+                }
+            }
+            public string[] mao { get; set; }
+            public string[] shi { get; set; }
+            public string[] kirara { get; set; }
+            public string[] megu { get; set; }
+            public string[] tama { get; set; }
+            public string[] other { get; set; }
         }
         private GjGif gj = new GjGif();
     }

@@ -201,7 +201,7 @@ namespace DiscordBot.Modules.StarlightStage
 
         private void SaveJson()
         {
-            string json = JsonConvert.SerializeObject(accounts.ToArray());
+            string json = JsonConvert.SerializeObject(accounts.ToArray(), Formatting.Indented);
 
             System.IO.File.WriteAllText($"{filePath}", json);
         }
