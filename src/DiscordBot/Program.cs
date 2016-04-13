@@ -10,6 +10,7 @@ using DiscordBot.Modules.Feeds;
 using DiscordBot.Modules.Finance;
 using DiscordBot.Modules.Github;
 using DiscordBot.Modules.Modules;
+using DiscordBot.Modules.N_des;
 using DiscordBot.Modules.Public;
 using DiscordBot.Modules.Random;
 using DiscordBot.Modules.StarlightStage;
@@ -83,6 +84,7 @@ namespace DiscordBot
 
             _client.AddModule<BorderModule>("Border", ModuleFilter.None);
             _client.AddModule<FinanceModule>("Finance", ModuleFilter.None);
+            _client.AddModule<N_desModule>("N_des", ModuleFilter.None);
             _client.AddModule<RandomModule>("Random", ModuleFilter.None);
             _client.AddModule<StarlightStageModule>("StarlightStage", ModuleFilter.None);
 

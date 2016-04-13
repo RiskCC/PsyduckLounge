@@ -30,48 +30,6 @@ namespace DiscordBot.Modules.Random
 
             manager.CreateCommands("", group =>
             {
-                group.CreateCommand("Kippei nudes")
-                       .Description("Random 001 for Jhazat")
-                       .Do(async e =>
-                       {
-                           await e.Channel.SendIsTyping();
-                           await e.Channel.SendMessage($"http://i.imgur.com/knRpikQ.gif");
-                       });
-                group.CreateCommand("Jhazat nudes")
-                       .Description("Random 002 for Jhazat")
-                       .Do(async e =>
-                       {
-                           await e.Channel.SendIsTyping();
-                           await e.Channel.SendMessage($"http://i.imgur.com/sxO5h1N.gif");
-                       });
-                group.CreateCommand("Coco nudes")
-                       .Description("Random 003 for Owl")
-                       .Do(async e =>
-                       {
-                           await e.Channel.SendIsTyping();
-                           await e.Channel.SendMessage($"http://i.imgur.com/mdzCSvz.jpg");
-                       });
-                group.CreateCommand("Zeraek nudes")
-                       .Description("Random 004 for Zeraek")
-                       .Do(async e =>
-                       {
-                           await e.Channel.SendIsTyping();
-                           await e.Channel.SendMessage($"http://i.imgur.com/eLHoLCC.png");
-                       });
-                group.CreateCommand("Neal nudes")
-                       .Description("Random 005 for Neal")
-                       .Do(async e =>
-                       {
-                           await e.Channel.SendIsTyping();
-                           await e.Channel.SendMessage($"http://i.imgur.com/I4tI1tL.gif");
-                       });
-                group.CreateCommand("Madi nudes")
-                       .Description("Random 007 for Madi")
-                       .Do(async e =>
-                       {
-                           await e.Channel.SendIsTyping();
-                           await e.Channel.SendMessage($"http://i.imgur.com/PhiAU20.gif");
-                       });
                 group.CreateCommand("Risk plz")
                        .Description("Random 005 for Risk")
                        .Do(async e =>
