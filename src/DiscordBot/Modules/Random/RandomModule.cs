@@ -65,6 +65,13 @@ namespace DiscordBot.Modules.Random
                            await e.Channel.SendIsTyping();
                            await e.Channel.SendMessage($"http://i.imgur.com/I4tI1tL.gif");
                        });
+                group.CreateCommand("Madi nudes")
+                       .Description("Random 007 for Madi")
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"http://i.imgur.com/PhiAU20.gif");
+                       });
                 group.CreateCommand("Risk plz")
                        .Description("Random 005 for Risk")
                        .Do(async e =>
