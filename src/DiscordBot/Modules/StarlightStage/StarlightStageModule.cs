@@ -187,7 +187,7 @@ namespace DiscordBot.Modules.StarlightStage
         {
             try
             {
-                accounts.RemoveAll(a => a.name == e.Args[0]);
+                accounts.RemoveAll(a => String.Equals(a.name, e.Args[0], StringComparison.OrdinalIgnoreCase));
                 SaveJson();
                 await e.Channel.SendMessage($"{e.Args[0]} removed");
                 //await e.Channel.SendMessage($"this doesn't do anything yet, sorry~");
@@ -214,7 +214,8 @@ namespace DiscordBot.Modules.StarlightStage
                 id = id
             };
 
-            int index = accounts.FindLastIndex(s => s.name == psyduck.name);
+            int index = accounts.FindLastIndex(s => String.Equals(s.name, psyduck.name, StringComparison.OrdinalIgnoreCase));
+
             if (index != -1)
             {
                 accounts[index] = psyduck;
