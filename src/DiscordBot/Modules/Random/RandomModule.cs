@@ -232,6 +232,10 @@ namespace DiscordBot.Modules.Random
                         url = yryr.himawari[image];
                         break;
                     case 9:
+                        image = x.Next(0, yryr.rise.Count());
+                        url = yryr.rise[image];
+                        break;
+                    case 10:
                         image = x.Next(0, yryr.other.Count());
                         url = yryr.other[image];
                         break;
@@ -397,6 +401,7 @@ namespace DiscordBot.Modules.Random
             public string[] chitose { get; set; }
             public string[] sakurako { get; set; }
             public string[] himawari { get; set; }
+            public string[] rise { get; set; }
             public string[] other { get; set; }
         }
         private YryrGif yryr = new YryrGif();
