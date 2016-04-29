@@ -8,6 +8,7 @@ using DiscordBot.Modules.Border;
 using DiscordBot.Modules.Colors;
 using DiscordBot.Modules.Feeds;
 using DiscordBot.Modules.Finance;
+using DiscordBot.Modules.Gif;
 using DiscordBot.Modules.Github;
 using DiscordBot.Modules.Modules;
 using DiscordBot.Modules.N_des;
@@ -76,6 +77,7 @@ namespace DiscordBot
             _client.AddModule<AdminModule>("Admin", ModuleFilter.ServerWhitelist);
             _client.AddModule<ColorsModule>("Colors", ModuleFilter.ServerWhitelist);
             _client.AddModule<FeedModule>("Feeds", ModuleFilter.ServerWhitelist);
+            _client.AddModule<GifModule>("Gif", ModuleFilter.None);
             //_client.AddModule<GithubModule>("Repos", ModuleFilter.ServerWhitelist);
             _client.AddModule<ModulesModule>("Modules", ModuleFilter.None);
             _client.AddModule<PublicModule>("Public", ModuleFilter.None);
