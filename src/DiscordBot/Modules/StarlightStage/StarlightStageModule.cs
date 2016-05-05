@@ -21,8 +21,10 @@ namespace DiscordBot.Modules.StarlightStage
     {
         private ModuleManager _manager;
         private DiscordClient _client;
-        private string filePath = "./config/UmiBot.json";
-        private string filePath2 = "./config/tweetinvi.json";
+        private static string filePath = "./config/UmiBot.json";
+        private static string filePath2 = "./config/tweetinvi.json";
+        public static string filePathFull = Path.GetFullPath(filePath);
+        public static string filePath2Full = Path.GetFullPath(filePath2);
         private List<Account> accounts = new List<Account>();
         private List<Keys> keys = new List<Keys>();
         private string result, name, id;
@@ -37,7 +39,18 @@ namespace DiscordBot.Modules.StarlightStage
             LoadJson();
             LoadKeys();
             Auth.SetUserCredentials(keys[0].consumerKey, keys[0].consumerSecret, keys[0].accessToken, keys[0].accessTokenSecret);
-
+            manager.CreateCommands("", group =>
+            {
+                group.CreateCommand("update ss")
+                       .Description("Updates with lastest json")
+                       .MinPermissions((int)PermissionLevel.BotOwner)
+                       .Do(async e =>
+                       {
+                           LoadJson();
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"ss user json updated!");
+                       });
+            });
             manager.CreateCommands("ss", group =>
             {
                 group.CreateCommand("help")

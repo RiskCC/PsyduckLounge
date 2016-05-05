@@ -13,17 +13,27 @@ namespace DiscordBot.Modules.N_des
     {
         private ModuleManager _manager;
         private DiscordClient _client;
-        private string imagesJson = "./config/n_des_images.json";
+        private static string filePath = "./config/n_des_images.json";
+        public static string filePathFull = Path.GetFullPath(filePath);
 
         void IModule.Install(ModuleManager manager)
         {
             _manager = manager;
             _client = _manager.Client;
 
-            LoadImagesJson(imagesJson);
+            LoadImagesJson(filePath);
 
             manager.CreateCommands("", group =>
             {
+                group.CreateCommand("update nudes")
+                       .Description("Updates with lastest json")
+                       .MinPermissions((int)PermissionLevel.BotOwner)
+                       .Do(async e =>
+                       {
+                           LoadImagesJson(filePath);
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"nudes json updated!");
+                       });
                 group.CreateCommand("nudes")
                        .Parameter("name", ParameterType.Required)
                        .Description("Get a nudes")
@@ -141,7 +151,7 @@ namespace DiscordBot.Modules.N_des
                     nudes.Add(penguin);
                 }
 
-                WriteJson(imagesJson);
+                WriteJson(filePath);
                 return $"Add successful for {name}";
             }
             catch (Exception ex)

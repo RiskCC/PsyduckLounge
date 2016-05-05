@@ -19,7 +19,8 @@ namespace DiscordBot.Modules.Gif
         private ModuleManager _manager;
         private DiscordClient _client;
         private System.Random x = new System.Random();
-        private string imagesJsonFilePath = "./config/images.json";
+        private static string imagesJsonFilePath = "./config/images.json";
+        public static string imagesJsonFilePathFull = Path.GetFullPath(imagesJsonFilePath);
         private JToken imagesJson;
         private JObject shows, girls;
         private JArray gifs;
@@ -33,6 +34,16 @@ namespace DiscordBot.Modules.Gif
             //Test();
             manager.CreateCommands("", group =>
             {
+                group.CreateCommand("update gif")
+                       .Description("Updates with lastest json")
+                       .MinPermissions((int)PermissionLevel.BotOwner)
+                       .Do(async e =>
+                       {
+                           LoadJson(imagesJsonFilePath);
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"gif json updated!");
+
+                       });
                 group.CreateCommand("gj")
                        .Parameter("girl number", ParameterType.Multiple)
                        .Description("Gets a gj gif")
@@ -206,7 +217,7 @@ namespace DiscordBot.Modules.Gif
 
                             if (girl.Name.Equals(_girl))
                             {
-                                if (_number < 0 || _number > girl.Value.Count())
+                                if (_number < 0 || _number > girl.Value.Count() || girl.Value.Count() == 1)
                                 {
                                     _number = x.Next(girl.Value.Count());
                                 }

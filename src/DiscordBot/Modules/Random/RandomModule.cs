@@ -2,6 +2,9 @@
 using Discord.Commands;
 using Discord.Commands.Permissions.Levels;
 using Discord.Modules;
+using DiscordBot.Modules.Gif;
+using DiscordBot.Modules.N_des;
+using DiscordBot.Modules.StarlightStage;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -19,14 +22,59 @@ namespace DiscordBot.Modules.Random
         private ModuleManager _manager;
         private DiscordClient _client;
         private System.Random x = new System.Random();
+        private GifModule gif = new GifModule();
+        private N_desModule nudes = new N_desModule();
+        private StarlightStageModule ss = new StarlightStageModule();
+        private string dropboxFolderPath;
 
         void IModule.Install(ModuleManager manager)
         {
             _manager = manager;
             _client = _manager.Client;
 
+            FindDropboxFolder();
+
             manager.CreateCommands("", group =>
             {
+                group.CreateCommand("hi")
+                       .Description("Say hi!")
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           switch (x.Next(2))
+                           {
+                               case 0:
+                                   await e.Channel.SendMessage($"hi :)");
+                                   break;
+                               case 1:
+                                   await e.Channel.SendMessage($"hello :D");
+                                   break;
+                               default:
+                                   await e.Channel.SendMessage($"hi :)");
+                                   break;
+                           }
+
+                       });
+                group.CreateCommand("backup")
+                       .Parameter("file(s)", ParameterType.Required)
+                       .Description("Backup json config files to the Dropbox folder")
+                       .MinPermissions((int)PermissionLevel.BotOwner)
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"{Backup(e)}");
+
+                       });
+                group.CreateCommand("restore")
+                       .Parameter("file(s)", ParameterType.Required)
+                       .Description("Restore json config files from the Dropbox folder")
+                       .MinPermissions((int)PermissionLevel.BotOwner)
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"{Restore(e)}");
+
+                       });
                 group.CreateCommand("bad pull")
                        .Description("For when you get a bad pull...")
                        .Do(async e =>
@@ -65,6 +113,110 @@ namespace DiscordBot.Modules.Random
                            await e.Channel.SendMessage($"{GetSleep(e)}");
                        });
             });
+        }
+
+        private void FindDropboxFolder()
+        {
+            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string dbPath = System.IO.Path.Combine(appDataPath, "Dropbox\\host.db");
+            string[] lines = System.IO.File.ReadAllLines(dbPath);
+            byte[] dbBase64Text = Convert.FromBase64String(lines[1]);
+            dropboxFolderPath = System.Text.ASCIIEncoding.ASCII.GetString(dbBase64Text);
+        }
+
+        private string Backup(CommandEventArgs e)
+        {
+            string a, b, c = "";
+            switch (e.Args[0])
+            {
+                case "all":
+                    a = Copy(GifModule.imagesJsonFilePathFull, $"{dropboxFolderPath}\\config\\images.json");
+                    b = Copy(N_desModule.filePathFull, $"{dropboxFolderPath}\\config\\n_des_images.json");
+                    c = Copy(StarlightStageModule.filePathFull, $"{dropboxFolderPath}\\config\\UmiBot.json");
+                    if (String.Equals(a, b) && String.Equals(b, c))
+                    {
+                        return "all ok";
+                    }
+                    else
+                    {
+                        return "something failed";
+                    }
+                case "gif":
+                    a = Copy(GifModule.imagesJsonFilePathFull, $"{dropboxFolderPath}\\config\\images.json");
+                    return $"{a}";
+                case "nudes":
+                    b = Copy(N_desModule.filePathFull, $"{dropboxFolderPath}\\config\\n_des_images.json");
+                    return $"{b}";
+                case "umibot":
+                    c = Copy(StarlightStageModule.filePathFull, $"{dropboxFolderPath}\\config\\UmiBot.json");
+                    return $"{c}";
+                default:
+                    a = Copy(GifModule.imagesJsonFilePathFull, $"{dropboxFolderPath}\\config\\images.json");
+                    b = Copy(N_desModule.filePathFull, $"{dropboxFolderPath}\\config\\n_des_images.json");
+                    c = Copy(StarlightStageModule.filePathFull, $"{dropboxFolderPath}\\config\\UmiBot.json");
+                    if (String.Equals(a, b) && String.Equals(b, c))
+                    {
+                        return "all ok";
+                    }
+                    else
+                    {
+                        return "something failed";
+                    }
+            }
+        }
+
+        private string Restore(CommandEventArgs e)
+        {
+            string a, b, c = "";
+            switch (e.Args[0])
+            {
+                case "all":
+                    a = Copy($"{dropboxFolderPath}\\config\\images.json", GifModule.imagesJsonFilePathFull);
+                    b = Copy($"{dropboxFolderPath}\\config\\n_des_images.json", N_desModule.filePathFull);
+                    c = Copy($"{dropboxFolderPath}\\config\\UmiBot.json", StarlightStageModule.filePathFull);
+                    if (String.Equals(a, b) && String.Equals(b, c))
+                    {
+                        return "all ok";
+                    }
+                    else
+                    {
+                        return "something failed";
+                    }
+                case "gif":
+                    a = Copy($"{dropboxFolderPath}\\config\\images.json", GifModule.imagesJsonFilePathFull);
+                    return $"{a}";
+                case "nudes":
+                    b = Copy($"{dropboxFolderPath}\\config\\n_des_images.json", N_desModule.filePathFull);
+                    return $"{b}";
+                case "umibot":
+                    c = Copy($"{dropboxFolderPath}\\config\\UmiBot.json", StarlightStageModule.filePathFull);
+                    return $"{c}";
+                default:
+                    a = Copy($"{dropboxFolderPath}\\config\\images.json", GifModule.imagesJsonFilePathFull);
+                    b = Copy($"{dropboxFolderPath}\\config\\n_des_images.json", N_desModule.filePathFull);
+                    c = Copy($"{dropboxFolderPath}\\config\\UmiBot.json", StarlightStageModule.filePathFull);
+                    if (String.Equals(a, b) && String.Equals(b, c))
+                    {
+                        return "all ok";
+                    }
+                    else
+                    {
+                        return "something failed";
+                    }
+            }
+        }
+
+        private string Copy(string source, string destination)
+        {
+            try
+            {
+                File.Copy(source, destination, true);
+                return "ok";
+            }
+            catch (Exception e)
+            {
+                return $"{e.InnerException.ToString()}";
+            }
         }
 
         private string GetSleep(CommandEventArgs e)
