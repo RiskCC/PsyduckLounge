@@ -77,18 +77,18 @@ namespace DiscordBot
             _client.AddModule<AdminModule>("Admin", ModuleFilter.ServerWhitelist);
             _client.AddModule<ColorsModule>("Colors", ModuleFilter.ServerWhitelist);
             _client.AddModule<FeedModule>("Feeds", ModuleFilter.ServerWhitelist);
-            _client.AddModule<GifModule>("Gif", ModuleFilter.None);
+            _client.AddModule<FinanceModule>("Finance", ModuleFilter.ServerWhitelist);
             //_client.AddModule<GithubModule>("Repos", ModuleFilter.ServerWhitelist);
             _client.AddModule<ModulesModule>("Modules", ModuleFilter.None);
             _client.AddModule<PublicModule>("Public", ModuleFilter.None);
             //_client.AddModule<TwitchModule>("Twitch", ModuleFilter.ServerWhitelist);
             _client.AddModule<StatusModule>("Status", ModuleFilter.ServerWhitelist);
 
-            _client.AddModule<BorderModule>("Border", ModuleFilter.None);
-            _client.AddModule<FinanceModule>("Finance", ModuleFilter.None);
-            _client.AddModule<N_desModule>("N_des", ModuleFilter.None);
-            _client.AddModule<RandomModule>("Random", ModuleFilter.None);
-            _client.AddModule<StarlightStageModule>("StarlightStage", ModuleFilter.None);
+            _client.AddModule<BorderModule>("Border", ModuleFilter.ServerWhitelist);
+            _client.AddModule<GifModule>("Gif", ModuleFilter.ServerWhitelist);
+            _client.AddModule<N_desModule>("N_des", ModuleFilter.ServerWhitelist);
+            _client.AddModule<RandomModule>("Random", ModuleFilter.ServerWhitelist);
+            _client.AddModule<StarlightStageModule>("StarlightStage", ModuleFilter.ServerWhitelist);
 
             //_client.AddModule(new ExecuteModule(env, exporter), "Execute", ModuleFilter.ServerWhitelist);
 
