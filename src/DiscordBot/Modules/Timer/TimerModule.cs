@@ -60,7 +60,6 @@ namespace DiscordBot.Modules.Timer
                        });
                 group.CreateCommand("ss")
                        .Description("Gets remaining SS event time formatted in days:hours:minutes:seconds")
-                       .MinPermissions((int)PermissionLevel.UserPlus)
                        .Do(async e =>
                        {
                            await e.Channel.SendIsTyping();
@@ -68,7 +67,6 @@ namespace DiscordBot.Modules.Timer
                        });
                 group.CreateCommand("sifjp")
                        .Description("Gets remaining SIF JP event time formatted in days:hours:minutes:seconds")
-                       .MinPermissions((int)PermissionLevel.UserPlus)
                        .Do(async e =>
                        {
                            await e.Channel.SendIsTyping();
@@ -76,7 +74,6 @@ namespace DiscordBot.Modules.Timer
                        });
                 group.CreateCommand("sifen")
                        .Description("Gets remaining SIF EN event time formatted in days:hours:minutes:seconds")
-                       .MinPermissions((int)PermissionLevel.UserPlus)
                        .Do(async e =>
                        {
                            await e.Channel.SendIsTyping();
