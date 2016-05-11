@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System;
 using System.Net;
 using System.IO;
+using DiscordBot.Modules.Timer;
 
 namespace DiscordBot.Modules.Border
 {
@@ -13,6 +14,8 @@ namespace DiscordBot.Modules.Border
     {
         private ModuleManager _manager;
         private DiscordClient _client;
+        private TimerModule tm = new TimerModule();
+
         private string ssCsv = "http://deresuteborder.web.fc2.com/csv/event_latest.csv";
         private string sifenCsv = "https://docs.google.com/spreadsheets/d/1a2ihrwVgyZnjy3OjqKYsFyJLxECXBO5WrPkEK1WEivw/export?format=csv&id=1a2ihrwVgyZnjy3OjqKYsFyJLxECXBO5WrPkEK1WEivw&gid=2089803644";
         private string sifjpCsv = "http://llborder.web.fc2.com/summary.csv";
@@ -26,7 +29,7 @@ namespace DiscordBot.Modules.Border
         {
             _manager = manager;
             _client = _manager.Client;
-            
+
             manager.CreateCommands("border", group =>
             {
                 group.CreateCommand("")
@@ -82,9 +85,10 @@ namespace DiscordBot.Modules.Border
 
             d = new int[] { 0, Int32.Parse(a[1]) - Int32.Parse(b[1]), Int32.Parse(a[2]) - Int32.Parse(b[2]), Int32.Parse(a[3]) - Int32.Parse(b[3]), Int32.Parse(a[4]) - Int32.Parse(b[4]), Int32.Parse(a[5]) - Int32.Parse(b[5]) };
             elapsed = DateTime.Parse(a[0]) - DateTime.Parse(b[0]);
-            args = new object[] { a[0], a[1], a[2], a[3], a[4], a[5], d[1], d[2], d[3], d[4], d[5], elapsed.TotalMinutes };
 
-            result = String.Format("Last Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})\nT5: {5} (+{10})", args);
+            args = new object[] { a[0], a[1], a[2], a[3], a[4], a[5], d[1], d[2], d[3], d[4], d[5], elapsed.TotalMinutes, tm.GetTimer("ss", "event") };
+
+            result = String.Format("Remaining: {12}\nLast Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})\nT5: {5} (+{10})", args);
             await e.Channel.SendMessage($"{result}");
         }
 
@@ -106,9 +110,9 @@ namespace DiscordBot.Modules.Border
             b = splitCsv[i - 2].Split(',');
             a = splitCsv[i - 1].Split(',');
             elapsed = DateTime.Parse(a[1]) - DateTime.Parse(b[1]);
-            args = new object[] { a[1], a[4], a[5], a[6], a[7], a[9], a[10], a[11], a[12], elapsed.TotalMinutes };
+            args = new object[] { a[1], a[4], a[5], a[6], a[7], a[9], a[10], a[11], a[12], elapsed.TotalMinutes, tm.GetTimer("sifen", "event") };
 
-            result = String.Format("Last Updated: {0} UTC (+{9} min)\nT1: {1} (+{5})\nT2: {2} (+{6})\nT3: {3} (+{7})\nT4: {4} (+{8})", args);
+            result = String.Format("Remaining: {10}\nLast Updated: {0} UTC (+{9} min)\nT1: {1} (+{5})\nT2: {2} (+{6})\nT3: {3} (+{7})\nT4: {4} (+{8})", args);
             await e.Channel.SendMessage($"{result}");
         }
 
@@ -125,9 +129,9 @@ namespace DiscordBot.Modules.Border
             d = new int[] { 0, Int32.Parse(a[1]) - Int32.Parse(b[1]), Int32.Parse(a[2]) - Int32.Parse(b[2]), Int32.Parse(a[3]) - Int32.Parse(b[3]), Int32.Parse(a[4]) - Int32.Parse(b[4]), Int32.Parse(a[5]) - Int32.Parse(b[5]) };
             elapsed = DateTime.Parse(a[0]) - DateTime.Parse(b[0]);
 
-            args = new object[] { a[0], a[1], a[2], a[3], a[4], a[5], d[1], d[2], d[3], d[4], d[5], elapsed.TotalMinutes };
+            args = new object[] { a[0], a[1], a[2], a[3], a[4], a[5], d[1], d[2], d[3], d[4], d[5], elapsed.TotalMinutes, tm.GetTimer("sifjp", "event") };
 
-            result = String.Format("Last Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})", args);
+            result = String.Format("Remaining: {12}\nLast Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})", args);
             await e.Channel.SendMessage($"{result}");
         }
 

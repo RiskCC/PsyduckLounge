@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.Commands.Permissions.Levels;
 using Discord.Modules;
 using DiscordBot.Modules.Border;
+using DiscordBot.Modules.Timer;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -95,6 +96,13 @@ namespace DiscordBot.Modules.StarlightStage
                        {
                            BorderModule bm = new BorderModule();
                            return bm.GetBorderSS(e, "");
+                       });
+                group.CreateCommand("timer")
+                       .Description("Alternate method to call timer ss")
+                       .Do(async e =>
+                       {
+                           TimerModule tm = new TimerModule();
+                           await e.Channel.SendMessage($"Time remaining: {tm.GetTimer("ss", "event")}");
                        });
                 group.CreateCommand("prediction")
                        .Description("Get last prediction tweet")

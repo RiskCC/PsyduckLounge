@@ -314,7 +314,7 @@ namespace DiscordBot.Modules.Gif
             return result;
         }
 
-        private JProperty RandomProperty (JObject obj)
+        private JProperty RandomProperty(JObject obj)
         {
             return obj.Properties().ElementAt(x.Next(obj.Properties().Count()));
         }

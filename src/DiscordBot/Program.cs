@@ -16,6 +16,7 @@ using DiscordBot.Modules.Public;
 using DiscordBot.Modules.Random;
 using DiscordBot.Modules.StarlightStage;
 using DiscordBot.Modules.Status;
+using DiscordBot.Modules.Timer;
 using DiscordBot.Modules.Twitch;
 using DiscordBot.Services;
 using System;
@@ -88,6 +89,7 @@ namespace DiscordBot
             _client.AddModule<GifModule>("Gif", ModuleFilter.None);
             _client.AddModule<N_desModule>("N_des", ModuleFilter.None);
             _client.AddModule<RandomModule>("Random", ModuleFilter.None);
+            _client.AddModule<TimerModule>("Timer", ModuleFilter.None);
             _client.AddModule<StarlightStageModule>("StarlightStage", ModuleFilter.None);
 
             //_client.AddModule(new ExecuteModule(env, exporter), "Execute", ModuleFilter.ServerWhitelist);
