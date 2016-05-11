@@ -30,6 +30,8 @@ namespace DiscordBot.Modules.StarlightStage
         private List<Keys> keys = new List<Keys>();
         private string result, name, id;
         private string consumerKey, consumerSecret, accessToken, accessTokenSecret;
+        private BorderModule bm = new BorderModule();
+        private TimerModule tm = new TimerModule();
 
 
         void IModule.Install(ModuleManager manager)
@@ -94,14 +96,12 @@ namespace DiscordBot.Modules.StarlightStage
                        .Description("Alternate method to call border ss")
                        .Do(e =>
                        {
-                           BorderModule bm = new BorderModule();
                            return bm.GetBorderSS(e, "");
                        });
                 group.CreateCommand("timer")
                        .Description("Alternate method to call timer ss")
                        .Do(async e =>
                        {
-                           TimerModule tm = new TimerModule();
                            await e.Channel.SendMessage($"Time remaining: {tm.GetTimer("ss", "event")}");
                        });
                 group.CreateCommand("prediction")

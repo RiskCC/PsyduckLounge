@@ -71,6 +71,27 @@ namespace DiscordBot.Modules.Border
                         return GetBorderSIFJP(e, "");
                     });
             });
+            manager.CreateCommands("", group =>
+            {
+                group.CreateCommand("sifen")
+                    .Description("Returns the current School Idol Festival EN tier borders.")
+                    .Do(e =>
+                    {
+                        return GetBorderSIFEN(e, "");
+                    });
+                group.CreateCommand("ss")
+                    .Description("Returns the current Starlight Stage tier borders.")
+                    .Do(e =>
+                    {
+                        return GetBorderSS(e, "");
+                    });
+                group.CreateCommand("sifjp")
+                    .Description("Returns the current School Idol Festival JP tier borders.")
+                    .Do(e =>
+                    {
+                        return GetBorderSIFJP(e, "");
+                    });
+            });
         }
 
         public async Task GetBorderSS(CommandEventArgs e, string target)
