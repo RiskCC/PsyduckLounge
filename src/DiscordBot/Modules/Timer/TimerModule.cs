@@ -208,7 +208,7 @@ namespace DiscordBot.Modules.Timer
                         foreach (JProperty eventtype_ in eventtype.Properties())
                         {
                             if (eventtype_.Name.Equals(_item))
-                            {
+                            {                                
                                 if (_group.Equals("ss") || _group.Equals("sifjp"))
                                 {
                                     return $"{GetTimeRemaining(eventtype_.Value.ToString(), "JST")}.";
@@ -232,7 +232,11 @@ namespace DiscordBot.Modules.Timer
 
         private string GetTimeRemaining(string endtime, string timezone)
         {
-            if (timezone.Equals("UTC"))
+            if (String.IsNullOrWhiteSpace(endtime))
+            {
+                return "no event time set";
+            }
+            else if (timezone.Equals("UTC"))
             {
                 return (string.Format("{0:dd\\:hh\\:mm\\:ss}", DateTime.Parse(endtime) - DateTime.UtcNow));
             }
