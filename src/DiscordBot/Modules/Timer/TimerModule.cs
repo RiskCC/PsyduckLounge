@@ -238,11 +238,25 @@ namespace DiscordBot.Modules.Timer
             }
             else if (timezone.Equals("UTC"))
             {
-                return (string.Format("{0:dd\\:hh\\:mm\\:ss}", DateTime.Parse(endtime) - DateTime.UtcNow));
+                if (DateTime.Parse(endtime) < DateTime.UtcNow)
+                {
+                    return "event finished";
+                }
+                else
+                {
+                    return (string.Format("{0:dd\\:hh\\:mm\\:ss}", DateTime.Parse(endtime) - DateTime.UtcNow));
+                }
             }
             else
             {
-                return (string.Format("{0:dd\\:hh\\:mm\\:ss}", DateTime.Parse(endtime) - TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time"))));
+                if (DateTime.Parse(endtime) < TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time")))
+                {
+                    return "event finished";
+                }
+                else
+                {
+                    return (string.Format("{0:dd\\:hh\\:mm\\:ss}", DateTime.Parse(endtime) - TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time"))));
+                }
             }
 
         }
