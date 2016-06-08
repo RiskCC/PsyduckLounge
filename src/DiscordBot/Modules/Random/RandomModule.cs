@@ -75,6 +75,14 @@ namespace DiscordBot.Modules.Random
                            await e.Channel.SendMessage($"{Restore(e)}");
 
                        });
+                group.CreateCommand("getlogs")
+                       .Parameter("count", ParameterType.Optional)
+                       .Description("Gets UmiBot [count] log messages via private message")
+                       .MinPermissions((int)PermissionLevel.BotOwner)
+                       .Do(e =>
+                       {
+                           PmLogs(e);
+                       });
                 group.CreateCommand("bad pull")
                        .Description("For when you get a bad pull...")
                        .Do(async e =>
@@ -251,6 +259,28 @@ namespace DiscordBot.Modules.Random
             }
 
             return sleepUrl;
+        }
+
+        private async void PmLogs(CommandEventArgs e)
+        {
+            int messages = 5;
+            try
+            {
+                messages = int.Parse(e.Args[0]);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            Discord.Channel chan = await _client.CreatePrivateChannel(GlobalSettings.Users.DevId);
+            string[] logdata = File.ReadAllLines(Path.GetFullPath(@".\config\UmiBot.log"));
+
+            for (int i = logdata.Count() - messages; i < logdata.Count(); i++)
+            {
+                await chan.SendMessage(logdata[i]);
+            }
+            await chan.SendMessage("Logs sent!");
         }
     }
 }

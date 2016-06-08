@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.API.Client;
 using Discord.Commands;
 using Discord.Commands.Permissions.Levels;
 using Discord.Modules;
@@ -71,7 +72,7 @@ namespace DiscordBot.Modules.StarlightStage
                        .Description("Gets user info based off account ID or name")
                        .Do(async e =>
                        {
-                           await e.Channel.SendIsTyping();                           
+                           await e.Channel.SendIsTyping();
                            GetMe(e);
                        });
                 group.CreateCommand("add")
@@ -179,6 +180,7 @@ namespace DiscordBot.Modules.StarlightStage
         {
             // Discord caches images so we need to force a new image get
             var duck = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+
             try
             {
                 id = Read(e.Args[0]);
@@ -187,6 +189,13 @@ namespace DiscordBot.Modules.StarlightStage
                 {
                     throw new SystemException();
                 }
+
+                if (String.Compare(e.Args[0], "Risk", true) == 0)
+                {
+                    Discord.Channel chan = await _client.CreatePrivateChannel(GlobalSettings.Users.DevId);
+                    await chan.SendMessage($"{e.User.Name} just used SS GET in {e.Server.Name}");
+                }
+
                 result = $"https://deresute.me/{id}/medium.png?{duck}";
             }
             catch (Exception ex)
@@ -200,7 +209,7 @@ namespace DiscordBot.Modules.StarlightStage
                     result = "not found; try again (๑◕︵◕๑)";
                 }
             }
-            
+
             await e.Channel.SendMessage($"{result}");
         }
 
@@ -211,8 +220,6 @@ namespace DiscordBot.Modules.StarlightStage
                 accounts.RemoveAll(a => String.Equals(a.name, e.Args[0], StringComparison.OrdinalIgnoreCase));
                 SaveJson();
                 await e.Channel.SendMessage($"{e.Args[0]} removed");
-                //await e.Channel.SendMessage($"this doesn't do anything yet, sorry~");
-
             }
             catch (Exception ex)
             {
