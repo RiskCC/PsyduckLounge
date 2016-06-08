@@ -71,7 +71,7 @@ namespace DiscordBot.Modules.StarlightStage
                        .Description("Gets user info based off account ID or name")
                        .Do(async e =>
                        {
-                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendIsTyping();                           
                            GetMe(e);
                        });
                 group.CreateCommand("add")
@@ -187,20 +187,20 @@ namespace DiscordBot.Modules.StarlightStage
                 {
                     throw new SystemException();
                 }
-                result = $"https://deresute.me/{id}/medium?{duck}";
+                result = $"https://deresute.me/{id}/medium.png?{duck}";
             }
             catch (Exception ex)
             {
                 if (Regex.IsMatch(e.Args[0], "^[0-9]{9}$"))
                 {
-                    result = $"https://deresute.me/{e.Args[0]}/medium?{duck}";
+                    result = $"https://deresute.me/{e.Args[0]}/medium.png?{duck}";
                 }
                 else
                 {
                     result = "not found; try again (๑◕︵◕๑)";
                 }
             }
-
+            
             await e.Channel.SendMessage($"{result}");
         }
 
