@@ -130,8 +130,15 @@ namespace DiscordBot.Modules.Border
             }
             b = splitCsv[i - 2].Split(',');
             a = splitCsv[i - 1].Split(',');
-            elapsed = DateTime.Parse(a[1]) - DateTime.Parse(b[1]);
-            args = new object[] { a[1], a[4], a[5], a[6], a[7], a[9], a[10], a[11], a[12], elapsed.TotalMinutes, tm.GetTimer("sifen", "event") };
+            try
+            {
+                elapsed = DateTime.Parse(a[1]) - DateTime.Parse(b[1]);
+                args = new object[] { a[1], a[4], a[5], a[6], a[7], a[9], a[10], a[11], a[12], elapsed.TotalMinutes, tm.GetTimer("sifen", "event") };
+            }
+            catch (Exception ex)
+            {
+                args = new object[] { a[1], a[4], a[5], a[6], a[7], a[9], a[10], a[11], a[12], "null", tm.GetTimer("sifen", "event") };
+            }
 
             result = String.Format("Remaining: {10}\nLast Updated: {0} UTC (+{9} min)\nT1: {1} (+{5})\nT2: {2} (+{6})\nT3: {3} (+{7})\nT4: {4} (+{8})", args);
             await e.Channel.SendMessage($"{result}");
