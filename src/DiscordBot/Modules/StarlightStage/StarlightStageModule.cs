@@ -119,9 +119,25 @@ namespace DiscordBot.Modules.StarlightStage
         {
             var accts = Search.SearchUsers("cindere_border");
             var acct = accts.First();
-            var lastTweets = acct.GetUserTimeline(1);
-            var lastTweet = lastTweets.FirstOrDefault();
-            await e.Channel.SendMessage($"{lastTweet.Text.ToString()}");
+            var lastTweets = acct.GetUserTimeline(3);
+            var lastTweet = "";
+            foreach (var tweet in lastTweets)
+            {
+                if (tweet.Text.Length > 100)
+                {
+                    lastTweet = tweet.ToString();
+                    break;
+                }
+            }
+
+            if (String.IsNullOrEmpty(lastTweet))
+            {
+                await e.Channel.SendMessage($"Couldn't find a prediction tweet (๑´╹‸╹`๑)");
+            }
+            else
+            {
+                await e.Channel.SendMessage($"{lastTweet.ToString()}");
+            }
 
         }
 
