@@ -7,6 +7,8 @@ using System;
 using System.Net;
 using System.IO;
 using DiscordBot.Modules.Timer;
+using Tweetinvi;
+using Tweetinvi.Core.Interfaces;
 
 namespace DiscordBot.Modules.Border
 {
@@ -19,6 +21,7 @@ namespace DiscordBot.Modules.Border
         private string ssCsv = "http://deresuteborder.web.fc2.com/csv/event_latest.csv";
         private string sifenCsv = "https://docs.google.com/spreadsheets/d/1a2ihrwVgyZnjy3OjqKYsFyJLxECXBO5WrPkEK1WEivw/export?format=csv&id=1a2ihrwVgyZnjy3OjqKYsFyJLxECXBO5WrPkEK1WEivw&gid=2089803644";
         private string sifjpCsv = "http://llborder.web.fc2.com/summary.csv";
+
         private string result, csv, current, previous;
         private string[] splitCsv, a, b;
         private int[] d;
@@ -62,13 +65,13 @@ namespace DiscordBot.Modules.Border
                     .Description("Returns the current School Idol Festival EN tier borders.")
                     .Do(e =>
                     {
-                        return GetBorderSIFEN(e, "");
+                        GetLastBorderTweet(e, "sifen_trackbot");
                     });
                 group.CreateCommand("sifjp")
                     .Description("Returns the current School Idol Festival JP tier borders.")
                     .Do(e =>
                     {
-                        return GetBorderSIFJP(e, "");
+                        GetLastBorderTweet(e, "sifjp_trackbot");
                     });
             });
             manager.CreateCommands("", group =>
@@ -77,7 +80,7 @@ namespace DiscordBot.Modules.Border
                     .Description("Returns the current School Idol Festival EN tier borders.")
                     .Do(e =>
                     {
-                        return GetBorderSIFEN(e, "");
+                        GetLastBorderTweet(e, "sifen_trackbot");
                     });
                 group.CreateCommand("ss")
                     .Description("Returns the current Starlight Stage tier borders.")
@@ -89,9 +92,46 @@ namespace DiscordBot.Modules.Border
                     .Description("Returns the current School Idol Festival JP tier borders.")
                     .Do(e =>
                     {
-                        return GetBorderSIFJP(e, "");
+                        GetLastBorderTweet(e, "sifjp_trackbot");
                     });
             });
+        }
+
+        private async void GetLastBorderTweet(CommandEventArgs e, string account)
+        {
+            var accts = Search.SearchUsers(account);
+            var acct = accts.First();
+            var lastTweets = acct.GetUserTimeline(20);
+            var lastTweet = "";
+            foreach (var tweet in lastTweets)
+            {
+                if (tweet.Text.Contains("T1:") && tweet.Text.Contains("T2:"))
+                {
+                    lastTweet = tweet.ToString();
+                    break;
+                }
+            }
+
+            if (String.IsNullOrEmpty(lastTweet))
+            {
+                await e.Channel.SendMessage($"Couldn't find a prediction tweet (๑´╹‸╹`๑)");
+            }
+            else
+            {
+                if (account == "sifen_trackbot")
+                {
+                    await e.Channel.SendMessage($"Remaining: {tm.GetTimer("sifen", "event")}\n{lastTweet.ToString()}");
+                }
+                else if (account == "sifjp_trackbot")
+                {
+                    await e.Channel.SendMessage($"Remaining: {tm.GetTimer("sifjp", "event")}\n{lastTweet.ToString()}");
+                }
+                else
+                {
+                    await e.Channel.SendMessage($"Couldn't find a prediction tweet (๑´╹‸╹`๑)");
+                }
+            }
+
         }
 
         public async Task GetBorderSS(CommandEventArgs e, string target)
