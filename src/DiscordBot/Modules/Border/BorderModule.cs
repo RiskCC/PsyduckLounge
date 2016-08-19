@@ -71,13 +71,13 @@ namespace DiscordBot.Modules.Border
                     .Description("Returns the current School Idol Festival EN tier borders.")
                     .Do(e =>
                     {
-                        GetLastBorderTweet(e, "sifen_trackbot");
+                        GetLastBorderTweet(e, "LLSIF EN Tracker Bot");
                     });
                 group.CreateCommand("sifjp")
                     .Description("Returns the current School Idol Festival JP tier borders.")
                     .Do(e =>
                     {
-                        GetLastBorderTweet(e, "sifjp_trackbot");
+                        GetLastBorderTweet(e, "LLSIF JP Tracker Bot");
                     });
             });
             manager.CreateCommands("", group =>
@@ -86,7 +86,7 @@ namespace DiscordBot.Modules.Border
                     .Description("Returns the current School Idol Festival EN tier borders.")
                     .Do(e =>
                     {
-                        GetLastBorderTweet(e, "sifen_trackbot");
+                        GetLastBorderTweet(e, "LLSIF EN Tracker Bot");
                     });
                 group.CreateCommand("ss")
                     .Description("Returns the current Starlight Stage tier borders.")
@@ -98,15 +98,23 @@ namespace DiscordBot.Modules.Border
                     .Description("Returns the current School Idol Festival JP tier borders.")
                     .Do(e =>
                     {
-                        GetLastBorderTweet(e, "sifjp_trackbot");
+                        GetLastBorderTweet(e, "LLSIF JP Tracker Bot");
                     });
             });
         }
 
         private async void GetLastBorderTweet(CommandEventArgs e, string account)
         {
-            var accts = Search.SearchUsers(account);
+            var accts = Search.SearchUsers("sifen_trackbot");
             var acct = accts.First();
+            foreach (var a in accts)
+            {
+                acct = a;
+                if (a.Name == account)
+                {
+                    break;
+                }
+            }
             var lastTweets = acct.GetUserTimeline(20);
             var lastTweet = "";
             foreach (var tweet in lastTweets)
