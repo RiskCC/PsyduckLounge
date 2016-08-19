@@ -28,9 +28,9 @@ namespace DiscordBot.Modules.StarlightStage
         public static string filePathFull = Path.GetFullPath(filePath);
         public static string filePath2Full = Path.GetFullPath(filePath2);
         private List<Account> accounts = new List<Account>();
-        //private List<Keys> keys = new List<Keys>();
+        private List<Keys> keys = new List<Keys>();
         private string result, name, id;
-        //private string consumerKey, consumerSecret, accessToken, accessTokenSecret;
+        private string consumerKey, consumerSecret, accessToken, accessTokenSecret;
         private BorderModule bm = new BorderModule();
         private TimerModule tm = new TimerModule();
 
@@ -41,8 +41,8 @@ namespace DiscordBot.Modules.StarlightStage
             _client = _manager.Client;
 
             LoadJson();
-            //LoadKeys();
-            //Auth.SetUserCredentials(keys[0].consumerKey, keys[0].consumerSecret, keys[0].accessToken, keys[0].accessTokenSecret);
+            LoadKeys();
+            Auth.SetUserCredentials(keys[0].consumerKey, keys[0].consumerSecret, keys[0].accessToken, keys[0].accessTokenSecret);
             manager.CreateCommands("", group =>
             {
                 group.CreateCommand("update ss")
@@ -157,14 +157,14 @@ namespace DiscordBot.Modules.StarlightStage
                     File.Create(filePath);
             }
         }
-        //private void LoadKeys()
-        //{
-        //    using (StreamReader r = new StreamReader(filePath2))
-        //    {
-        //        string json = r.ReadToEnd();
-        //        keys = JsonConvert.DeserializeObject<List<Keys>>(json);
-        //    }
-        //}
+        private void LoadKeys()
+        {
+            using (StreamReader r = new StreamReader(filePath2))
+            {
+                string json = r.ReadToEnd();
+                keys = JsonConvert.DeserializeObject<List<Keys>>(json);
+            }
+        }
         private async void AddMe(CommandEventArgs e)
         {
             try
@@ -285,13 +285,13 @@ namespace DiscordBot.Modules.StarlightStage
         }
     }
 
-    //internal class Keys
-    //{
-    //    public string consumerKey;
-    //    public string consumerSecret;
-    //    public string accessToken;
-    //    public string accessTokenSecret;
-    //}
+    internal class Keys
+    {
+        public string consumerKey;
+        public string consumerSecret;
+        public string accessToken;
+        public string accessTokenSecret;
+    }
 
     internal class Account
     {

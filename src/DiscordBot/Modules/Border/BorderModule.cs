@@ -9,6 +9,8 @@ using System.IO;
 using DiscordBot.Modules.Timer;
 using Tweetinvi;
 using Tweetinvi.Core.Interfaces;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace DiscordBot.Modules.Border
 {
@@ -22,6 +24,8 @@ namespace DiscordBot.Modules.Border
         private string sifenCsv = "https://docs.google.com/spreadsheets/d/1a2ihrwVgyZnjy3OjqKYsFyJLxECXBO5WrPkEK1WEivw/export?format=csv&id=1a2ihrwVgyZnjy3OjqKYsFyJLxECXBO5WrPkEK1WEivw&gid=2089803644";
         private string sifjpCsv = "http://llborder.web.fc2.com/summary.csv";
 
+        private static string filePath2 = "./config/tweetinvi.json";
+        private List<Keys> keys = new List<Keys>();
         private string result, csv, current, previous;
         private string[] splitCsv, a, b;
         private int[] d;
@@ -33,6 +37,8 @@ namespace DiscordBot.Modules.Border
             _manager = manager;
             _client = _manager.Client;
 
+            LoadKeys();
+            Auth.SetUserCredentials(keys[0].consumerKey, keys[0].consumerSecret, keys[0].accessToken, keys[0].accessTokenSecret);
             manager.CreateCommands("border", group =>
             {
                 group.CreateCommand("")
@@ -202,6 +208,14 @@ namespace DiscordBot.Modules.Border
             result = String.Format("Remaining: {12}\nLast Updated: {0} JST (+{11} min)\nT1: {1} (+{6})\nT2: {2} (+{7})\nT3: {3} (+{8})\nT4: {4} (+{9})", args);
             await e.Channel.SendMessage($"{result}");
         }
+        private void LoadKeys()
+        {
+            using (StreamReader r = new StreamReader(filePath2))
+            {
+                string json = r.ReadToEnd();
+                keys = JsonConvert.DeserializeObject<List<Keys>>(json);
+            }
+        }
 
         private string GetCSV(string url)
         {
@@ -213,6 +227,13 @@ namespace DiscordBot.Modules.Border
             sr.Close();
 
             return results;
+        }
+        internal class Keys
+        {
+            public string consumerKey;
+            public string consumerSecret;
+            public string accessToken;
+            public string accessTokenSecret;
         }
     }
 }
