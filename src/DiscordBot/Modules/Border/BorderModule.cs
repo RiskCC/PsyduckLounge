@@ -132,11 +132,11 @@ namespace DiscordBot.Modules.Border
             }
             else
             {
-                if (account == "sifen_trackbot")
+                if (account == "LLSIF EN Tracker Bot")
                 {
                     await e.Channel.SendMessage($"Remaining: {tm.GetTimer("sifen", "event")}\n{lastTweet.ToString()}");
                 }
-                else if (account == "sifjp_trackbot")
+                else if (account == "LLSIF JP Tracker Bot")
                 {
                     await e.Channel.SendMessage($"Remaining: {tm.GetTimer("sifjp", "event")}\n{lastTweet.ToString()}");
                 }
