@@ -111,7 +111,13 @@ namespace DiscordBot.Modules.Random
                            await e.Channel.SendIsTyping();
                            await e.Channel.SendMessage($"http://i.imgur.com/DUJ0IG5.png");
                        });
-
+                group.CreateCommand("basic")
+                       .Description("The most basic things around")
+                       .Do(async e =>
+                       {
+                           await e.Channel.SendIsTyping();
+                           await e.Channel.SendMessage($"http://i.imgur.com/1XCRsrm.jpg");
+                       });
                 group.CreateCommand("sleep")
                        .Parameter("Text", ParameterType.Optional)
                        .Description("Random 006 for sleep")
